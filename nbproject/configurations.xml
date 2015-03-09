@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="95">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <logicalFolder name="src" displayName="src" projectFiles="true">
+        <itemPath>src/globals.h</itemPath>
+        <itemPath>src/ipc_allocator.cpp</itemPath>
+        <itemPath>src/ipc_allocator.h</itemPath>
+        <itemPath>src/logger.cpp</itemPath>
+        <itemPath>src/logger.h</itemPath>
+        <itemPath>src/wonderlandx.cpp</itemPath>
+      </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>src</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <architecture>1</architecture>
+        </cTool>
+        <ccTool>
+          <architecture>1</architecture>
+          <commandlineTool>g++</commandlineTool>
+          <incDir>
+            <pElem>/var/cod4x17/repo/plugins</pElem>
+            <pElem>libs/zeromq-4.0.5/bin/include</pElem>
+          </incDir>
+          <commandLine>-Wattributes</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/CoD4X17/wonderlandx.so</output>
+          <linkerLibItems>
+            <linkerLibFileItem>libs/zeromq-4.0.5/bin/lib/libzmq.a</linkerLibFileItem>
+          </linkerLibItems>
+          <commandLine>-shared</commandLine>
+        </linkerTool>
+      </compileType>
+      <item path="src/globals.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ipc_allocator.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ipc_allocator.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/logger.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/logger.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/wonderlandx.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+    </conf>
+    <conf name="Release" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+      </compileType>
+      <item path="src/globals.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ipc_allocator.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ipc_allocator.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/logger.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/logger.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/wonderlandx.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
