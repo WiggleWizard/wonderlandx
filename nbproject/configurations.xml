@@ -52,15 +52,18 @@
           <architecture>1</architecture>
           <commandlineTool>g++</commandlineTool>
           <incDir>
-            <pElem>/var/cod4x17/repo/plugins</pElem>
-            <pElem>libs/zeromq-4.0.5/bin/include</pElem>
+            <pElem>libs/zeromq-4.0.5/dist/include</pElem>
+            <pElem>libs/CoD4X17a/plugins</pElem>
           </incDir>
           <commandLine>-Wattributes</commandLine>
         </ccTool>
         <linkerTool>
           <output>${CND_DISTDIR}/${CND_CONF}/CoD4X17/wonderlandx.so</output>
+          <linkerAddLib>
+            <pElem>libs/zeromq-4.0.5/dist/lib</pElem>
+          </linkerAddLib>
           <linkerLibItems>
-            <linkerLibFileItem>libs/zeromq-4.0.5/bin/lib/libzmq.a</linkerLibFileItem>
+            <linkerLibLibItem>zmq</linkerLibLibItem>
           </linkerLibItems>
           <commandLine>-shared</commandLine>
         </linkerTool>

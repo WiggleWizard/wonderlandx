@@ -5,8 +5,6 @@
 #include "globals.h"
 #include "ipc_allocator.h"
 
-using namespace std;
-
 PCL int OnInit()
 {
 	Plugin_Printf("Initialising WonderlandX\n");
