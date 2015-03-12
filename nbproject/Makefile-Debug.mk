@@ -21,8 +21,8 @@ FC=gfortran
 AS=as
 
 # Macros
-CND_PLATFORM=GNU-MacOSX
-CND_DLIB_EXT=dylib
+CND_PLATFORM=GNU-Linux-x86
+CND_DLIB_EXT=so
 CND_CONF=Debug
 CND_DISTDIR=dist
 CND_BUILDDIR=build
@@ -35,7 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/src/ipc_allocator.o \
+	${OBJECTDIR}/src/ipc_broker.o \
 	${OBJECTDIR}/src/logger.o \
 	${OBJECTDIR}/src/wonderlandx.o
 
@@ -54,20 +54,22 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-Llibs/zeromq-4.0.5/dist/lib -lzmq
+LDLIBSOPTIONS=-Llibs/zeromq-4.0.5/dist/lib libs/zeromq-4.0.5/dist/lib/libzmq.a
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
 	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/CoD4X17/wonderlandx.so
 
+${CND_DISTDIR}/${CND_CONF}/CoD4X17/wonderlandx.so: libs/zeromq-4.0.5/dist/lib/libzmq.a
+
 ${CND_DISTDIR}/${CND_CONF}/CoD4X17/wonderlandx.so: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/CoD4X17
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/CoD4X17/wonderlandx.so ${OBJECTFILES} ${LDLIBSOPTIONS} -shared
 
-${OBJECTDIR}/src/ipc_allocator.o: src/ipc_allocator.cpp 
+${OBJECTDIR}/src/ipc_broker.o: src/ipc_broker.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Ilibs/zeromq-4.0.5/dist/include -Ilibs/CoD4X17a/plugins -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ipc_allocator.o src/ipc_allocator.cpp
+	$(COMPILE.cc) -g -Ilibs/zeromq-4.0.5/dist/include -Ilibs/CoD4X17a/plugins -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ipc_broker.o src/ipc_broker.cpp
 
 ${OBJECTDIR}/src/logger.o: src/logger.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src

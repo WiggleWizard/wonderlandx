@@ -5,11 +5,11 @@
 
 #include <zmq.h>
 
-class IPCAllocator {
+class IPCBroker {
 public:
-	IPCAllocator();
-	IPCAllocator(const IPCAllocator& orig);
-	virtual ~IPCAllocator();
+	IPCBroker();
+	IPCBroker(const IPCBroker& orig);
+	virtual ~IPCBroker();
 	
 /*===============================================================*\
  * THREADS
@@ -21,11 +21,14 @@ public:
      * @param allocatorPtr
      * @return 
      */
-	static void* ThreadedAllocator(void* allocatorPtr);
+	static void* ThreadedBroker(void* allocatorPtr);
+	
+	static char* s_recv(void* socket);
 	
 private:
-	pthread_t allocatorThread;
-	
+	pthread_t brokerThread;
+	void* zmqContext;
+	void* zmqSocket;
 };
 
 #endif	/* IPC_CHAN_H */

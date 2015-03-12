@@ -3,13 +3,13 @@
 #include <pinc.h>
 
 #include "globals.h"
-#include "ipc_allocator.h"
+#include "ipc_broker.h"
 
 PCL int OnInit()
 {
 	Plugin_Printf("Initialising WonderlandX\n");
 	
-	IPCAllocator* ipcChan = new IPCAllocator();
+	IPCBroker* ipcChan = new IPCBroker();
 	
 	return 0;
 }

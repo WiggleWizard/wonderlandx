@@ -14,8 +14,8 @@
                    projectFiles="true">
       <logicalFolder name="src" displayName="src" projectFiles="true">
         <itemPath>src/globals.h</itemPath>
-        <itemPath>src/ipc_allocator.cpp</itemPath>
-        <itemPath>src/ipc_allocator.h</itemPath>
+        <itemPath>src/ipc_broker.cpp</itemPath>
+        <itemPath>src/ipc_broker.h</itemPath>
         <itemPath>src/logger.cpp</itemPath>
         <itemPath>src/logger.h</itemPath>
         <itemPath>src/wonderlandx.cpp</itemPath>
@@ -63,16 +63,16 @@
             <pElem>libs/zeromq-4.0.5/dist/lib</pElem>
           </linkerAddLib>
           <linkerLibItems>
-            <linkerLibLibItem>zmq</linkerLibLibItem>
+            <linkerLibFileItem>libs/zeromq-4.0.5/dist/lib/libzmq.a</linkerLibFileItem>
           </linkerLibItems>
           <commandLine>-shared</commandLine>
         </linkerTool>
       </compileType>
       <item path="src/globals.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/ipc_allocator.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/ipc_broker.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="src/ipc_allocator.h" ex="false" tool="3" flavor2="0">
+      <item path="src/ipc_broker.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/logger.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -103,9 +103,9 @@
       </compileType>
       <item path="src/globals.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/ipc_allocator.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/ipc_broker.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="src/ipc_allocator.h" ex="false" tool="3" flavor2="0">
+      <item path="src/ipc_broker.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/logger.cpp" ex="false" tool="1" flavor2="0">
       </item>
