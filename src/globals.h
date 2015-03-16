@@ -11,5 +11,11 @@
 #define PLUGIN_VERSION_MAJOR 0;
 #define PLUGIN_VERSION_MINOR 1;
 
+extern struct IPCTypes {
+	static const unsigned char uint = 0x01; // Unsigned int
+	static const unsigned char sint = 0x02; // Signed int
+	static const unsigned char ch   = 0x03; // Characters
+} IPCTypes;
+
 #endif	/* GLOBALS_H */
 
