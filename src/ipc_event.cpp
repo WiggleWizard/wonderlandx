@@ -77,22 +77,18 @@ void IPCCoD4Event::Compile()
 		}
 	}
 	
-	this->packetLen = 1 + 4 + payloadSize;
+	this->packetLen = 1 + payloadSize;
 
 	// Prepare the packet
 	uint32_t cursor = 0;
 	this->packet = new char[this->packetLen];
 	// --- Packet type
-	this->packet[0] = 'E';
+	memset(this->packet, 'E', 1);
 	cursor += 1;
-	// --- Payload size
-	uint32_t s = htonl(payloadSize);
-	memcpy(this->packet + cursor, &s, 4);
-	cursor += 4;
 	
 	// --- Command size
 	unsigned int sz = strlen(this->eventName);
-	s = htonl(sz);
+	uint32_t s = htonl(sz);
 	memcpy(this->packet + cursor, &s, 4);
 	cursor += 4;
 	// --- Command

@@ -95,8 +95,14 @@ void* IPCRabbithole::ThreadedEventSender(void* rabbitholePtr)
 			{
 				event->Compile();
 				
+				// After compile, we copy the packet across to open memory
+				// so that ZMQ cleans it up after it's done and we can attend
+				// to the event when ever we want.
+				char* msgData = (char*) malloc(event->GetPacketSize());
+				memcpy(msgData, event->GetPacket(), event->GetPacketSize());
+				
 				zmq_msg_t msg;
-				zmq_msg_init_data(&msg, event->GetPacket(), event->GetPacketSize(), NULL, NULL);
+				zmq_msg_init_data(&msg, msgData, 5, IPCRabbithole::ZMQDestroyMsgData, NULL);
 				
 				zmq_sendmsg(rabbithole->zmqSocket, &msg, ZMQ_DONTWAIT);
 				
@@ -164,4 +170,9 @@ void IPCRabbithole::DestroyEvent(IPCCoD4Event* event)
 void IPCRabbithole::SignalEventSend()
 {
 	this->condSendEvent.notify_one();
+}
+
+void IPCRabbithole::ZMQDestroyMsgData(void* data, void* hint)
+{
+	free(data);
 }

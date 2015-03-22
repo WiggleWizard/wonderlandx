@@ -30,7 +30,7 @@ PCL void OnInfoRequest(pluginInfo_t *info)
 	info->pluginVersion.major = PLUGIN_VERSION_MAJOR;
 	info->pluginVersion.minor = PLUGIN_VERSION_MINOR;
 	strncpy(info->fullName,"WonderlandX", sizeof(info->fullName));
-	strncpy(info->shortDescription,"Wonderland for CoD4X17a",sizeof(info->shortDescription));
+	strncpy(info->shortDescription, "Wonderland for CoD4X17a", sizeof(info->shortDescription));
 }
 
 PCL void OnPlayerConnect(int clientnum, netadr_t* netaddress, char* pbguid, char* userinfo, int authstatus, char* deniedmsg,  int deniedmsgbufmaxlen)

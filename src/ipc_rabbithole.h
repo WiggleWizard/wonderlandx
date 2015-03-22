@@ -59,6 +59,14 @@ public:
 	
 	void SignalEventSend();
 	
+	/**
+	 * Used by ZMQ to destroy msg data after it's sent.
+	 * 
+     * @param data
+     * @param hint
+     */
+	static void ZMQDestroyMsgData(void* data, void* hint);
+	
 private:
 	pthread_t rabbitholeThread;
 	void*     zmqContext;
