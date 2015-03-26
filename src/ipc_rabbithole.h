@@ -8,6 +8,7 @@
 #include <zmq.h>
 
 #include "ipc_event.h"
+#include "ipc_return_func.h"
 
 class IPCRabbithole {
 public:
@@ -36,6 +37,14 @@ public:
      * @return 
      */
 	static void* ThreadedEventSender(void* rabbitholePtr);
+	
+	/**
+	 * Async recv.
+	 * 
+     * @param rabbitholePtr
+     * @return 
+     */
+	static void* ThreadedRX(void* rabbitholePtr);
 	
 	
 	

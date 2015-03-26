@@ -61,18 +61,6 @@ void* IPCRabbithole::ThreadedRabbitholeInit(void* rabbitholePtr)
 	
 	// Thread out the event sender
 	pthread_create(&rabbithole->rabbitholeThread, NULL, &IPCRabbithole::ThreadedEventSender, rabbithole);
-	
-	/*while(1)
-	{
-		zmq_msg_t msg;
-		zmq_msg_init(&msg);
-	
-		int size = zmq_recvmsg(rabbithole->zmqSocket, &msg, 0);
-
-		Logger::LogInfo("MSG [size-> %i]: %s", zmq_msg_size(&msg), (char*)zmq_msg_data(&msg));
-		
-		zmq_msg_close(&msg);
-	}*/
 }
 
 void* IPCRabbithole::ThreadedEventSender(void* rabbitholePtr)
@@ -115,6 +103,46 @@ void* IPCRabbithole::ThreadedEventSender(void* rabbitholePtr)
 		unqlockSendEvent.unlock();
 	}
 }
+
+void* IPCRabbithole::ThreadedRX(void* rabbitholePtr)
+{
+	IPCRabbithole* rabbithole = (IPCRabbithole*) rabbitholePtr;
+	
+	while(true)
+	{
+		zmq_msg_t msg;
+		zmq_msg_init(&msg);
+	
+		zmq_recvmsg(rabbithole->zmqSocket, &msg, 0);
+		char* msgData = (char*) zmq_msg_data(&msg);
+		
+		if(zmq_msg_size(&msg) < 1)
+		{
+			Logger::LogInfo("Received a 0 length message, skipping");
+			continue;
+		}
+		
+		// Void function
+		if(msgData[0] == 'V')
+		{
+			
+		}
+		// Return function
+		else if(msgData[0] == 'R')
+		{
+			IPCReturnFunction returnFunc();
+			returnFunc.Parse(msgData);
+			
+			// Now we execute the function that was sent and we return any results
+			// of the exeuted function.
+			returnFunc.Execute();
+			returnFunc.Compile();
+		}
+		
+		zmq_msg_close(&msg);
+	}
+}
+
 
 
 /*===============================================================*\

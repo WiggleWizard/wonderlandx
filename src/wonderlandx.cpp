@@ -33,8 +33,12 @@ PCL void OnInfoRequest(pluginInfo_t *info)
 	strncpy(info->shortDescription, "Wonderland for CoD4X17a", sizeof(info->shortDescription));
 }
 
-PCL void OnPlayerConnect(int clientnum, netadr_t* netaddress, char* pbguid, char* userinfo, int authstatus, char* deniedmsg,  int deniedmsgbufmaxlen)
+PCL void OnPlayerConnect(int clientnum, netadr_t* netaddress, char* pbguid, char* userinfo, int authstatus, char* deniedmsg, int deniedmsgbufmaxlen)
 {
+	// Persist the user information
+	char* userInfo = (char*) malloc(strlen(userinfo));
+	strncpy(userInfo, userinfo, strlen(userinfo));
+	
 	// Byte array to little endian
 	uint ipAddr = 
 			(netaddress->ip[3] << 24) |
@@ -45,6 +49,7 @@ PCL void OnPlayerConnect(int clientnum, netadr_t* netaddress, char* pbguid, char
 	IPCCoD4Event* event = new IPCCoD4Event("PLAYERJOIN");
 	event->AddArgument((void*) clientnum, IPCTypes::sint);
 	event->AddArgument((void*) ipAddr, IPCTypes::sint);
+	event->AddArgument((void*) userInfo, IPCTypes::ch);
 	
 	rabbithole->SetEventForBroadcast(event);
 	
