@@ -1,4 +1,5 @@
 #include "logger.h"
+#include "globals.h"
 
 #include <cstdarg>
 #include <stdio.h>
@@ -19,7 +20,7 @@ void Logger::LogInfo(const char* format, ...)
 	
 	// We have to do these obscure formats because developers apparently hate variadic functions.
 	// I wonder who that is...
-	snprintf(fmtBuf, sizeof(fmtBuf), "[WonderlandX][\033[1;34mInfo\033[0m]: %s\n", format);
+	snprintf(fmtBuf, sizeof(fmtBuf), "[WonderlandX][\033[1;32mInfo\033[0m]: %s\n", format);
 	vsnprintf(buf, sizeof(buf), fmtBuf, args);
 	
 	Plugin_Printf(buf);
@@ -29,7 +30,9 @@ void Logger::LogInfo(const char* format, ...)
 
 void Logger::Debug(const char* format, ...)
 {
-	if()
+	if(!WONDERLANDX_DBG)
+		return;
+	
 	va_list args;
 	va_start(args, format);
 	
@@ -38,7 +41,7 @@ void Logger::Debug(const char* format, ...)
 	
 	// We have to do these obscure formats because developers apparently hate variadic functions.
 	// I wonder who that is...
-	snprintf(fmtBuf, sizeof(fmtBuf), "[WonderlandX][\033[1;34mDebug\033[0m]: %s\n", format);
+	snprintf(fmtBuf, sizeof(fmtBuf), "[WonderlandX][\033[1;36mDebug\033[0m]: %s\n", format);
 	vsnprintf(buf, sizeof(buf), fmtBuf, args);
 	
 	Plugin_Printf(buf);

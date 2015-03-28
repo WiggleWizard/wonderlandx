@@ -1,10 +1,3 @@
-/* 
- * File:   globals.h
- * Author: zinglish
- *
- * Created on 07 March 2015, 19:51
- */
-
 #ifndef GLOBALS_H
 #define	GLOBALS_H
 
@@ -17,7 +10,9 @@ extern struct IPCTypes {
 	static const unsigned char ch   = 0x03; // Characters
 } IPCTypes;
 
-extern bool DEBUG_MODE = 0;
+extern bool WONDERLANDX_DBG;
+extern bool WONDERLANDX_EVENT_DBG;
+extern bool WONDERLANDX_RTN_FUNC_DBG;
+extern bool WONDERLANDX_VOID_FUNC_DBG;
 
 #endif	/* GLOBALS_H */
-

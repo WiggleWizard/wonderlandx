@@ -9,6 +9,7 @@
 #include <pinc.h>
 
 #include "globals.h"
+#include "logger.h"
 
 IPCReturnFunction::IPCReturnFunction()
 {
@@ -61,11 +62,11 @@ void IPCReturnFunction::Parse(char* payload, bool destructive)
 	cursor += 1;
 	
 	// - Client ID
-	this->clientID = ntohl(*(uint32_t*) payload + cursor);
+	this->clientID = ntohl(*(uint32_t*) (payload + cursor));
 	cursor += 4;
 	
 	// - Packet ID
-	this->packetID = ntohl(*(uint32_t*) payload + cursor);
+	this->packetID = ntohl(*(uint32_t*) (payload + cursor));
 	cursor += 4;
 	
 	// - Function name size
@@ -124,6 +125,8 @@ void IPCReturnFunction::Parse(char* payload, bool destructive)
 
 void IPCReturnFunction::Execute()
 {
+	Logger::Debug("Attempting to execute return function '%s' for client %i", this->functionName, this->clientID);
+	
 	if(strcmp(this->functionName, "GETSLOTCOUNT") == 0)
 	{
 		this->functionReturnPtr = new char[4];
@@ -146,7 +149,7 @@ void IPCReturnFunction::Compile()
 	
 	// Calculate packet length
 	this->packetLen = 1;  // Packet type
-	this->packetLen += 4; // Payload length
+	this->packetLen += 4; // Client ID
 	this->packetLen += 4; // Packet ID
 	this->packetLen += 1; // Return type
 	
@@ -167,8 +170,8 @@ void IPCReturnFunction::Compile()
 	// - Packet type
 	this->packet[0] = 'R';
 	cursor += 1;
-	// - Payload length
-	u_int32_t s = htonl(this->packetLen);
+	// - Client ID
+	u_int32_t s = htonl(this->clientID);
 	memcpy(this->packet + cursor, &s, 4);
 	cursor += 4;
 	// - Packet ID

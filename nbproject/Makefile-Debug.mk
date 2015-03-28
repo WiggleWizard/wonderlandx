@@ -35,8 +35,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/src/globals.o \
 	${OBJECTDIR}/src/ipc_event.o \
 	${OBJECTDIR}/src/ipc_rabbithole.o \
+	${OBJECTDIR}/src/ipc_return_func.o \
 	${OBJECTDIR}/src/logger.o \
 	${OBJECTDIR}/src/wonderlandx.o
 
@@ -67,6 +69,11 @@ ${CND_DISTDIR}/${CND_CONF}/CoD4X17/wonderlandx.so: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/CoD4X17
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/CoD4X17/wonderlandx.so ${OBJECTFILES} ${LDLIBSOPTIONS} -shared
 
+${OBJECTDIR}/src/globals.o: src/globals.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Ilibs/zeromq-4.0.5/dist/include -Ilibs/CoD4X17a/plugins -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/globals.o src/globals.cpp
+
 ${OBJECTDIR}/src/ipc_event.o: src/ipc_event.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
@@ -76,6 +83,11 @@ ${OBJECTDIR}/src/ipc_rabbithole.o: src/ipc_rabbithole.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Ilibs/zeromq-4.0.5/dist/include -Ilibs/CoD4X17a/plugins -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ipc_rabbithole.o src/ipc_rabbithole.cpp
+
+${OBJECTDIR}/src/ipc_return_func.o: src/ipc_return_func.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Ilibs/zeromq-4.0.5/dist/include -Ilibs/CoD4X17a/plugins -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ipc_return_func.o src/ipc_return_func.cpp
 
 ${OBJECTDIR}/src/logger.o: src/logger.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src

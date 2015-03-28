@@ -35,8 +35,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/src/globals.o \
 	${OBJECTDIR}/src/ipc_event.o \
 	${OBJECTDIR}/src/ipc_rabbithole.o \
+	${OBJECTDIR}/src/ipc_return_func.o \
 	${OBJECTDIR}/src/logger.o \
 	${OBJECTDIR}/src/wonderlandx.o
 
@@ -65,6 +67,11 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/wonderlandx: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/wonderlandx ${OBJECTFILES} ${LDLIBSOPTIONS}
 
+${OBJECTDIR}/src/globals.o: src/globals.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/globals.o src/globals.cpp
+
 ${OBJECTDIR}/src/ipc_event.o: src/ipc_event.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
@@ -74,6 +81,11 @@ ${OBJECTDIR}/src/ipc_rabbithole.o: src/ipc_rabbithole.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ipc_rabbithole.o src/ipc_rabbithole.cpp
+
+${OBJECTDIR}/src/ipc_return_func.o: src/ipc_return_func.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ipc_return_func.o src/ipc_return_func.cpp
 
 ${OBJECTDIR}/src/logger.o: src/logger.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src

@@ -11,7 +11,21 @@ IPCRabbithole* rabbithole;
 
 PCL int OnInit()
 {
-	Plugin_Printf("Initialising WonderlandX\n");
+	// Plugin arguments
+	uint s = Plugin_Cmd_Argc();
+	for(uint i = 0; i < s; i++)
+	{
+		char* argv = Plugin_Cmd_Argv(i);
+		
+		if(strcmp(argv, "-d") == 0)
+		{
+			WONDERLANDX_DBG = true;
+			
+			Logger::LogInfo("Debug mode enabled");
+		}
+	}
+	
+	Logger::LogInfo("Initialising WonderlandX\n");
 	
 	int serverPort = Plugin_Cvar_VariableIntegerValue("net_port");
 	

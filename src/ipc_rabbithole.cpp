@@ -39,7 +39,7 @@ void* IPCRabbithole::ThreadedRabbitholeInit(void* rabbitholePtr)
 {
 	IPCRabbithole* rabbithole = (IPCRabbithole*)rabbitholePtr;
 	
-	Logger::LogInfo("Rabbit hole started, attempting to bind IPC @ %s", rabbithole->ipcFullPath);
+	Logger::Debug("Rabbit hole started, attempting to bind IPC @ %s", rabbithole->ipcFullPath);
 	
 	rabbithole->zmqContext = zmq_ctx_new();
 	rabbithole->zmqSocket  = zmq_socket(rabbithole->zmqContext, ZMQ_DEALER);
@@ -52,15 +52,18 @@ void* IPCRabbithole::ThreadedRabbitholeInit(void* rabbitholePtr)
 	int rc = zmq_bind(rabbithole->zmqSocket, rabbithole->ipcProtocol);
 	
 	if(!rc)
-		Logger::LogInfo("IPC bind successful");
+		Logger::Debug("IPC bind successful");
 	else
 	{
-		Logger::LogInfo("IPC bind unsuccessful");
+		Logger::Debug("IPC bind unsuccessful");
 		exit(0);
 	}
 	
 	// Thread out the event sender
-	pthread_create(&rabbithole->rabbitholeThread, NULL, &IPCRabbithole::ThreadedEventSender, rabbithole);
+	pthread_create(&rabbithole->eventThread, NULL, &IPCRabbithole::ThreadedEventSender, rabbithole);
+	
+	// Thread out the receiver
+	pthread_create(&rabbithole->rxThread, NULL, &IPCRabbithole::ThreadedRX, rabbithole);
 }
 
 void* IPCRabbithole::ThreadedEventSender(void* rabbitholePtr)
@@ -118,7 +121,7 @@ void* IPCRabbithole::ThreadedRX(void* rabbitholePtr)
 		
 		if(zmq_msg_size(&rxMsg) < 1)
 		{
-			Logger::LogInfo("Received a 0 length message, skipping");
+			Logger::Debug("Received a 0 length message, skipping");
 			continue;
 		}
 		

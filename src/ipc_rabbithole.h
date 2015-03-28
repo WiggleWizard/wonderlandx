@@ -78,6 +78,8 @@ public:
 	
 private:
 	pthread_t rabbitholeThread;
+	pthread_t eventThread;
+	pthread_t rxThread;
 	void*     zmqContext;
 	void*     zmqSocket;
 	

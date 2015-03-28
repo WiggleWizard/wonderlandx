@@ -13,11 +13,14 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="src" displayName="src" projectFiles="true">
+        <itemPath>src/globals.cpp</itemPath>
         <itemPath>src/globals.h</itemPath>
         <itemPath>src/ipc_event.cpp</itemPath>
         <itemPath>src/ipc_event.h</itemPath>
         <itemPath>src/ipc_rabbithole.cpp</itemPath>
         <itemPath>src/ipc_rabbithole.h</itemPath>
+        <itemPath>src/ipc_return_func.cpp</itemPath>
+        <itemPath>src/ipc_return_func.h</itemPath>
         <itemPath>src/logger.cpp</itemPath>
         <itemPath>src/logger.h</itemPath>
         <itemPath>src/wonderlandx.cpp</itemPath>
@@ -34,8 +37,20 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
   </logicalFolder>
   <sourceRootList>
+    <Elem>src</Elem>
     <Elem>src</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
@@ -71,6 +86,8 @@
           <commandLine>-shared</commandLine>
         </linkerTool>
       </compileType>
+      <item path="src/globals.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/globals.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ipc_event.cpp" ex="false" tool="1" flavor2="0">
@@ -80,6 +97,10 @@
       <item path="src/ipc_rabbithole.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/ipc_rabbithole.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ipc_return_func.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ipc_return_func.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/logger.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -108,6 +129,8 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="src/globals.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/globals.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/ipc_event.cpp" ex="false" tool="1" flavor2="0">
@@ -117,6 +140,10 @@
       <item path="src/ipc_rabbithole.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/ipc_rabbithole.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/ipc_return_func.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/ipc_return_func.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/logger.cpp" ex="false" tool="1" flavor2="0">
       </item>
