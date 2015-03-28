@@ -57,8 +57,15 @@ void IPCReturnFunction::Parse(char* payload, bool destructive)
 {
 	unsigned int cursor = 0;
 	
+	// - Packet type
+	cursor += 1;
+	
+	// - Client ID
+	this->clientID = ntohl(*(uint32_t*) payload + cursor);
+	cursor += 4;
+	
 	// - Packet ID
-	this->packetID = ntohl(*(uint32_t*) payload);
+	this->packetID = ntohl(*(uint32_t*) payload + cursor);
 	cursor += 4;
 	
 	// - Function name size

@@ -15,6 +15,7 @@ public:
 	virtual ~Logger();
 	
 	static void LogInfo(const char* format, ...);
+	static void Debug(const char* format, ...);
 private:
 
 };

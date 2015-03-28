@@ -1,3 +1,27 @@
+/**********************************************************************
+ * 
+ * DOCUMENTATION
+ * 
+ * 
+ * Packet Structure
+ * ----------------
+ * Packet structure of a return function consists of (in order):
+ *		- Packet type
+ *		- Client ID
+ *		- Packet ID
+ *
+ * ZeroMQ
+ * ------
+ * ZeroMQ helps to facilitate a safer transaction between client and
+ * server, as well as handling packet integrity. As such we have no
+ * need to add a packet length as ZeroMQ understands the length
+ * and nature of the packet. We do however run into a catch 22; ZeroMQ
+ * is required on both client and server side, however ZeroMQ can be
+ * embedded into many languages so this should not prove to be a huge enough
+ * issue to not use it.
+ * 
+ **********************************************************************/
+
 #ifndef IPC_RETURN_FUNC_H
 #define	IPC_RETURN_FUNC_H
 
@@ -43,16 +67,20 @@ public:
  * VARIABLES
 \*===============================================================*/
 	
-	void* functionReturnPtr;
+	void*   functionReturnPtr;
 	uint8_t functionReturnType;
-	char* functionName;
+	char*   functionName;
 private:
+	uint32_t clientID;
 	uint32_t packetID;
-	std::vector<void*> argv;
+	
+	std::vector<void*>   argv;
 	std::vector<uint8_t> argt;
 	
 	uint32_t packetLen;
-	char* packet;
+	char*    packet;
+	
+	std::vector<void*> functions;
 };
 
 #endif	/* IPC_RETURN_FUNC_H */

@@ -90,7 +90,7 @@ void* IPCRabbithole::ThreadedEventSender(void* rabbitholePtr)
 				memcpy(msgData, event->GetPacket(), event->GetPacketSize());
 				
 				zmq_msg_t msg;
-				zmq_msg_init_data(&msg, msgData, 5, IPCRabbithole::ZMQDestroyMsgData, NULL);
+				zmq_msg_init_data(&msg, msgData, event->GetPacketSize(), IPCRabbithole::ZMQDestroyMsgData, NULL);
 				
 				zmq_sendmsg(rabbithole->zmqSocket, &msg, ZMQ_DONTWAIT);
 				
@@ -110,36 +110,47 @@ void* IPCRabbithole::ThreadedRX(void* rabbitholePtr)
 	
 	while(true)
 	{
-		zmq_msg_t msg;
-		zmq_msg_init(&msg);
+		zmq_msg_t rxMsg;
+		zmq_msg_init(&rxMsg);
 	
-		zmq_recvmsg(rabbithole->zmqSocket, &msg, 0);
-		char* msgData = (char*) zmq_msg_data(&msg);
+		zmq_recvmsg(rabbithole->zmqSocket, &rxMsg, 0);
+		char* rxData = (char*) zmq_msg_data(&rxMsg);
 		
-		if(zmq_msg_size(&msg) < 1)
+		if(zmq_msg_size(&rxMsg) < 1)
 		{
 			Logger::LogInfo("Received a 0 length message, skipping");
 			continue;
 		}
 		
 		// Void function
-		if(msgData[0] == 'V')
+		if(rxData[0] == 'V')
 		{
 			
 		}
 		// Return function
-		else if(msgData[0] == 'R')
+		else if(rxData[0] == 'R')
 		{
-			IPCReturnFunction returnFunc();
-			returnFunc.Parse(msgData);
+			IPCReturnFunction returnFunc = IPCReturnFunction();
+			returnFunc.Parse(rxData, false);
 			
 			// Now we execute the function that was sent and we return any results
-			// of the exeuted function.
+			// of the executed function.
 			returnFunc.Execute();
 			returnFunc.Compile();
-		}
+			
+			// We have to copy the data into a temporary memory section in order to
+			// handle data racing.
+			char* txData = (char*) malloc(returnFunc.GetPacketLen());
+			memcpy(txData, returnFunc.GetPacket(), returnFunc.GetPacketLen());
 		
-		zmq_msg_close(&msg);
+			// Create the ZMQ message and then broadcast it
+			zmq_msg_t txMsg;
+			zmq_msg_init_data(&txMsg, txData, returnFunc.GetPacketLen(), IPCRabbithole::ZMQDestroyMsgData, NULL);
+			
+			zmq_sendmsg(rabbithole->zmqSocket, &txMsg, ZMQ_DONTWAIT);
+			
+			zmq_msg_close(&txMsg);
+		}
 	}
 }
 
