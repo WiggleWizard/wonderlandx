@@ -11,18 +11,18 @@
 #include "globals.h"
 #include "logger.h"
 
-IPCReturnFunction::IPCReturnFunction()
+IPCFunction::IPCFunction()
 {
 	this->argv.reserve(5);
 	this->argt.reserve(5);
 	
-	this->packet             = NULL;
-	this->functionReturnPtr  = NULL;
-	this->functionReturnType = 0;
+	this->packet       = NULL;
+	this->functionPtr  = NULL;
+	this->functionType = 0;
 }
 
-IPCReturnFunction::IPCReturnFunction(const IPCReturnFunction& orig) {}
-IPCReturnFunction::~IPCReturnFunction()
+IPCFunction::IPCFunction(const IPCFunction& orig) {}
+IPCFunction::~IPCFunction()
 {
 	// Free up arg memory
 	unsigned int args = this->argv.size();
@@ -40,11 +40,11 @@ IPCReturnFunction::~IPCReturnFunction()
 	this->functionName = NULL;
 	
 	// Decide how to delete the return based on its stored type
-	if(this->functionReturnType == IPCTypes::uint || this->functionReturnType == IPCTypes::sint)
-		delete (uint32_t*) this->functionReturnPtr;
-	else if(this->functionReturnType == IPCTypes::ch)
-		delete [] (char*) this->functionReturnPtr;
-	this->functionReturnPtr = NULL;
+	if(this->functionType == IPCTypes::uint || this->functionType == IPCTypes::sint)
+		delete (uint32_t*) this->functionPtr;
+	else if(this->functionType == IPCTypes::ch)
+		delete [] (char*) this->functionPtr;
+	this->functionPtr = NULL;
 		
 	delete [] this->packet;
 	this->packet = NULL;
@@ -54,7 +54,7 @@ IPCReturnFunction::~IPCReturnFunction()
  * FUNCTIONS
 \*===============================================================*/
 
-void IPCReturnFunction::Parse(char* payload, bool destructive)
+void IPCFunction::Parse(char* payload, bool destructive)
 {
 	unsigned int cursor = 0;
 	
@@ -123,22 +123,55 @@ void IPCReturnFunction::Parse(char* payload, bool destructive)
 	}
 }
 
-void IPCReturnFunction::Execute()
+void IPCFunction::Execute()
 {
 	Logger::Debug("Attempting to execute return function '%s' for client %i", this->functionName, this->clientID);
 	
 	if(strcmp(this->functionName, "GETSLOTCOUNT") == 0)
 	{
-		this->functionReturnPtr = new char[4];
+		this->functionPtr = new char[4];
 		
 		uint32_t s = Plugin_GetSlotCount();
-		memcpy(this->functionReturnPtr, &s, 4);
+		memcpy(this->functionPtr, &s, 4);
 		
-		this->functionReturnType = IPCTypes::uint;
+		this->functionType = IPCTypes::uint;
+	}
+	else if(strcmp(this->functionName, "PLAYERDATA") == 0)
+	{
+		std::stringstream allPlayerData;
+		uint32_t s = Plugin_GetSlotCount();
+		
+		for(unsigned int i = 0; i < s; i++)
+		{	
+			client_t* clientData = Plugin_GetClientForClientNum(i);
+			netchan_t netChan    = clientData->netchan;
+			
+			// Collate the user's data into a string
+			if(clientData->state > CS_FREE)
+			{
+				const char* ipAddr = Plugin_NET_AdrToStringShort(&netChan.remoteAddress);
+				
+				allPlayerData << i << "\\\\" << ipAddr << "\\\\";
+				allPlayerData << Plugin_GetPlayerGUID(i) << "\\\\" << Plugin_GetPlayerName(i);
+				
+				allPlayerData << "\n";
+			}
+		}
+		
+		allPlayerData << '\0';
+		
+		// Set return type and return value
+		this->functionType = IPCTypes::ch;
+		
+		unsigned int size = allPlayerData.tellp();
+		this->functionPtr = new char[size];
+		std::string tmp = allPlayerData.str();
+		
+		memcpy(this->functionPtr, tmp.c_str(), size);
 	}
 }
 
-void IPCReturnFunction::Compile()
+void IPCFunction::Compile()
 {
 	// Clean up memory if exists
 	if(this->packet != NULL)
@@ -153,12 +186,12 @@ void IPCReturnFunction::Compile()
 	this->packetLen += 4; // Packet ID
 	this->packetLen += 1; // Return type
 	
-	if(this->functionReturnType == IPCTypes::uint || this->functionReturnType == IPCTypes::sint)
+	if(this->functionType == IPCTypes::uint || this->functionType == IPCTypes::sint)
 		this->packetLen += 4;
-	else if(this->functionReturnType == IPCTypes::ch)
+	else if(this->functionType == IPCTypes::ch)
 	{
 		this->packetLen += 4;
-		this->packetLen += strlen((char*) this->functionReturnPtr);
+		this->packetLen += strlen((char*) this->functionPtr);
 	}
 	
 	// Construct a new packet
@@ -180,22 +213,22 @@ void IPCReturnFunction::Compile()
 	cursor += 4;
 	
 	// - Return type
-	memcpy(this->packet + cursor, &this->functionReturnType, 1);
+	memcpy(this->packet + cursor, &this->functionType, 1);
 	cursor += 1;
 	
 	// - Return value
-	if(this->functionReturnType == IPCTypes::uint || this->functionReturnType == IPCTypes::sint)
+	if(this->functionType == IPCTypes::uint || this->functionType == IPCTypes::sint)
 	{
-		s = htonl(*(uint32_t*) this->functionReturnPtr);
+		s = htonl(*(uint32_t*) this->functionPtr);
 		memcpy(this->packet + cursor, &s, 4);
 	}
-	else if(this->functionReturnType == IPCTypes::ch)
+	else if(this->functionType == IPCTypes::ch)
 	{
-		s = htonl(strlen((char*) this->functionReturnPtr));
+		s = htonl(strlen((char*) this->functionPtr));
 		memcpy(this->packet + cursor, &s, 4);
 		cursor += 4;
 		
-		memcpy(this->packet + cursor, (char*) this->functionReturnPtr, strlen((char*) this->functionReturnPtr));
+		memcpy(this->packet + cursor, (char*) this->functionPtr, strlen((char*) this->functionPtr));
 	}
 }
 
@@ -203,12 +236,12 @@ void IPCReturnFunction::Compile()
  * GTORS & STORS
 \*===============================================================*/
 
-char* IPCReturnFunction::GetPacket()
+char* IPCFunction::GetPacket()
 {
 	return this->packet;
 }
 
-uint32_t IPCReturnFunction::GetPacketLen()
+uint32_t IPCFunction::GetPacketLen()
 {
 	return this->packetLen;
 }

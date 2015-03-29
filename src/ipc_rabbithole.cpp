@@ -133,7 +133,7 @@ void* IPCRabbithole::ThreadedRX(void* rabbitholePtr)
 		// Return function
 		else if(rxData[0] == 'R')
 		{
-			IPCReturnFunction returnFunc = IPCReturnFunction();
+			IPCFunction returnFunc = IPCFunction();
 			returnFunc.Parse(rxData, false);
 			
 			// Now we execute the function that was sent and we return any results

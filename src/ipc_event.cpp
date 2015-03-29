@@ -38,7 +38,16 @@ IPCCoD4Event::~IPCCoD4Event()
 
 void IPCCoD4Event::AddArgument(void* arg, unsigned int type)
 {
-	this->argv.push_back(arg);
+	void* argv = arg;
+	
+	// Auto copy
+	if(type == IPCTypes::ch)
+	{
+		argv = malloc(strlen((char*) arg) + 1);
+		strcpy((char*) argv, (char*) arg);
+	}
+	
+	this->argv.push_back(argv);
 	this->argt.push_back(type);
 }
 	

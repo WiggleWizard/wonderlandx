@@ -49,10 +49,6 @@ PCL void OnInfoRequest(pluginInfo_t *info)
 
 PCL void OnPlayerConnect(int clientnum, netadr_t* netaddress, char* pbguid, char* userinfo, int authstatus, char* deniedmsg, int deniedmsgbufmaxlen)
 {
-	// Persist the user information
-	char* userInfo = (char*) malloc(strlen(userinfo));
-	strncpy(userInfo, userinfo, strlen(userinfo));
-	
 	// Byte array to little endian
 	uint ipAddr = 
 			(netaddress->ip[3] << 24) |
@@ -60,10 +56,26 @@ PCL void OnPlayerConnect(int clientnum, netadr_t* netaddress, char* pbguid, char
 			(netaddress->ip[1] << 8)  |
 			(netaddress->ip[0]);
 	
-	IPCCoD4Event* event = new IPCCoD4Event("PLAYERJOIN");
-	event->AddArgument((void*) clientnum, IPCTypes::sint);
-	event->AddArgument((void*) ipAddr, IPCTypes::sint);
-	event->AddArgument((void*) userInfo, IPCTypes::ch);
+	IPCCoD4Event* event = new IPCCoD4Event("JOIN");
+	event->AddArgument((void*) clientnum, IPCTypes::uint);
+	event->AddArgument((void*) ipAddr, IPCTypes::uint);
+	event->AddArgument((void*) Plugin_GetPlayerGUID(clientnum), IPCTypes::ch);
+	event->AddArgument((void*) Plugin_GetPlayerName(clientnum), IPCTypes::ch);
+	
+	rabbithole->SetEventForBroadcast(event);
+	
+	rabbithole->SignalEventSend();
+}
+
+PCL void OnMessageSent(char* message, int slot, qboolean *show, int mode)
+{
+	// Force the server not to forward the message on to the CoD4 clients
+	// because Alice will deal with them.
+	*show = qfalse;
+	
+	IPCCoD4Event* event = new IPCCoD4Event("CHAT");
+	event->AddArgument((void*) slot, IPCTypes::uint);
+	event->AddArgument((void*) message, IPCTypes::ch);
 	
 	rabbithole->SetEventForBroadcast(event);
 	

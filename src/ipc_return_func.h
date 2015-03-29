@@ -28,11 +28,11 @@
 #include <vector>
 #include <stdint.h>
 
-class IPCReturnFunction {
+class IPCFunction {
 public:
-	IPCReturnFunction();
-	IPCReturnFunction(const IPCReturnFunction& orig);
-	virtual ~IPCReturnFunction();
+	IPCFunction();
+	IPCFunction(const IPCFunction& orig);
+	virtual ~IPCFunction();
 	
 /*===============================================================*\
  * FUNCTIONS
@@ -56,6 +56,12 @@ public:
      */
 	void Compile();
 	
+	/**
+	 * 
+     * @param function
+     */
+	void RegisterFunction(void* function);
+	
 /*===============================================================*\
  * GTORS & STORS
 \*===============================================================*/
@@ -67,8 +73,8 @@ public:
  * VARIABLES
 \*===============================================================*/
 	
-	void*   functionReturnPtr;
-	uint8_t functionReturnType;
+	void*   functionPtr;
+	uint8_t functionType;
 	char*   functionName;
 private:
 	uint32_t clientID;
