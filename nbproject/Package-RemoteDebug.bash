@@ -6,15 +6,15 @@
 
 # Macros
 TOP=`pwd`
-CND_PLATFORM=GNU-MacOSX
-CND_CONF=Release
+CND_PLATFORM=GNU-Linux-x86
+CND_CONF=RemoteDebug
 CND_DISTDIR=dist
 CND_BUILDDIR=build
-CND_DLIB_EXT=dylib
+CND_DLIB_EXT=so
 NBTMPDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/wonderlandx
-OUTPUT_BASENAME=wonderlandx
+OUTPUT_PATH=${CND_DISTDIR}/${CND_CONF}/CoD4X17/wonderlandx.so
+OUTPUT_BASENAME=wonderlandx.so
 PACKAGE_TOP_DIR=wonderlandx/
 
 # Functions

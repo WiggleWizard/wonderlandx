@@ -21,8 +21,8 @@ FC=gfortran
 AS=as
 
 # Macros
-CND_PLATFORM=GNU-Linux-x86
-CND_DLIB_EXT=so
+CND_PLATFORM=GNU-MacOSX
+CND_DLIB_EXT=dylib
 CND_CONF=Debug
 CND_DISTDIR=dist
 CND_BUILDDIR=build
@@ -37,8 +37,9 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/src/globals.o \
 	${OBJECTDIR}/src/ipc_event.o \
+	${OBJECTDIR}/src/ipc_func_man.o \
+	${OBJECTDIR}/src/ipc_function.o \
 	${OBJECTDIR}/src/ipc_rabbithole.o \
-	${OBJECTDIR}/src/ipc_return_func.o \
 	${OBJECTDIR}/src/logger.o \
 	${OBJECTDIR}/src/wonderlandx.o
 
@@ -79,15 +80,20 @@ ${OBJECTDIR}/src/ipc_event.o: src/ipc_event.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Ilibs/zeromq-4.0.5/dist/include -Ilibs/CoD4X17a/plugins -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ipc_event.o src/ipc_event.cpp
 
+${OBJECTDIR}/src/ipc_func_man.o: src/ipc_func_man.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Ilibs/zeromq-4.0.5/dist/include -Ilibs/CoD4X17a/plugins -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ipc_func_man.o src/ipc_func_man.cpp
+
+${OBJECTDIR}/src/ipc_function.o: src/ipc_function.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Ilibs/zeromq-4.0.5/dist/include -Ilibs/CoD4X17a/plugins -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ipc_function.o src/ipc_function.cpp
+
 ${OBJECTDIR}/src/ipc_rabbithole.o: src/ipc_rabbithole.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Ilibs/zeromq-4.0.5/dist/include -Ilibs/CoD4X17a/plugins -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ipc_rabbithole.o src/ipc_rabbithole.cpp
-
-${OBJECTDIR}/src/ipc_return_func.o: src/ipc_return_func.cpp 
-	${MKDIR} -p ${OBJECTDIR}/src
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -Ilibs/zeromq-4.0.5/dist/include -Ilibs/CoD4X17a/plugins -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ipc_return_func.o src/ipc_return_func.cpp
 
 ${OBJECTDIR}/src/logger.o: src/logger.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src

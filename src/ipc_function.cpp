@@ -1,4 +1,4 @@
-#include "ipc_return_func.h"
+#include "ipc_function.h"
 
 #include <netinet/in.h>
 #include <cstring>
@@ -13,6 +13,8 @@
 
 IPCFunction::IPCFunction()
 {
+	this->argv = new std::vector<void*>();
+	this->argt = new std::vector<char*>();
 	this->argv.reserve(5);
 	this->argt.reserve(5);
 	
@@ -49,6 +51,8 @@ IPCFunction::~IPCFunction()
 	delete [] this->packet;
 	this->packet = NULL;
 }
+
+
 
 /*===============================================================*\
  * FUNCTIONS
@@ -116,7 +120,7 @@ void IPCFunction::Parse(char* payload, bool destructive)
 			char* str = new char[s + 1];
 			memcpy(str, payload + cursor, s);
 			str[s] = '\0';
-			this->argv.push_back(str);
+			this->argv->push_back(str);
 			
 			cursor += s;
 		}
@@ -125,7 +129,7 @@ void IPCFunction::Parse(char* payload, bool destructive)
 
 void IPCFunction::Execute()
 {
-	Logger::Debug("Attempting to execute return function '%s' for client %i", this->functionName, this->clientID);
+	Logger::Debug("Attempting to execute function '%s' for client %i", this->functionName, this->clientID);
 	
 	if(strcmp(this->functionName, "GETSLOTCOUNT") == 0)
 	{
@@ -244,4 +248,14 @@ char* IPCFunction::GetPacket()
 uint32_t IPCFunction::GetPacketLen()
 {
 	return this->packetLen;
+}
+
+std::vector<void*>* IPCFunction::GetArgs()
+{
+	return &this->argv;
+}
+
+std::vector<char*>* IPCFunction::GetArgTypes()
+{
+	return &this->argt;
 }

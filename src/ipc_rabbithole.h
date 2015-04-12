@@ -8,7 +8,7 @@
 #include <zmq.h>
 
 #include "ipc_event.h"
-#include "ipc_return_func.h"
+#include "ipc_function.h"
 
 class IPCRabbithole {
 public:
@@ -57,16 +57,18 @@ public:
 	 * 
      * @param event
      */
-	void SetEventForBroadcast(IPCCoD4Event* event);
+	void SetEventForBroadcast(IPCEvent* event);
 	
 	/**
 	 * Removes the event from the queue and frees up the memory.
 	 * 
      * @param event
      */
-	void DestroyEvent(IPCCoD4Event* event);
+	void DestroyEvent(IPCEvent* event);
 	
 	void SignalEventSend();
+	
+	void ExecuteIPCFunction(IPCFunction* ipcFunction);
 	
 	/**
 	 * Used by ZMQ to destroy msg data after it's sent.
@@ -77,6 +79,8 @@ public:
 	static void ZMQDestroyMsgData(void* data, void* hint);
 	
 private:
+	IPCFuncMan* ipcFuncMan;
+	
 	pthread_t rabbitholeThread;
 	pthread_t eventThread;
 	pthread_t rxThread;
@@ -91,8 +95,8 @@ private:
 	std::condition_variable condSendEvent;
 	std::mutex              lockSendEvent;
 	
-	std::vector<IPCCoD4Event*> queueEvents;
-	std::mutex                 lockQueueEvents;
+	std::vector<IPCEvent*> queueEvents;
+	std::mutex             lockQueueEvents;
 };
 
 #endif	/* IPC_CHAN_H */

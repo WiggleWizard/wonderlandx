@@ -7,9 +7,14 @@
 #include <pinc.h>
 
 #include "logger.h"
+#include "ipc_function.h"
+#include "ipc_func_man.h"
 
 IPCRabbithole::IPCRabbithole(int serverPort)
-{
+{	
+	// Build the IPC function manager
+	this->ipcFuncMan = new IPCFuncMan();
+	
 	// Reserve some slots for event sending
 	this->queueEvents.reserve(8);
 	uint s = this->queueEvents.size();
@@ -80,7 +85,7 @@ void* IPCRabbithole::ThreadedEventSender(void* rabbitholePtr)
 		uint s = rabbithole->queueEvents.size();
 		for(uint i = 0; i < s; i++)
 		{
-			IPCCoD4Event* event = rabbithole->queueEvents.at(i);
+			IPCEvent* event = rabbithole->queueEvents.at(i);
 			
 			if(event != NULL)
 			{
@@ -125,30 +130,24 @@ void* IPCRabbithole::ThreadedRX(void* rabbitholePtr)
 			continue;
 		}
 		
-		// Void function
-		if(rxData[0] == 'V')
+		if(rxData[0] == 'F')
 		{
-			
-		}
-		// Return function
-		else if(rxData[0] == 'R')
-		{
-			IPCFunction returnFunc = IPCFunction();
-			returnFunc.Parse(rxData, false);
+			IPCFunction ipcFunction = IPCFunction();
+			ipcFunction.Parse(rxData, false);
 			
 			// Now we execute the function that was sent and we return any results
 			// of the executed function.
-			returnFunc.Execute();
-			returnFunc.Compile();
+			this->ipcFuncMan->ExecuteIPCFunction(ipcFunction);
+			ipcFunction.Compile();
 			
 			// We have to copy the data into a temporary memory section in order to
 			// handle data racing.
-			char* txData = (char*) malloc(returnFunc.GetPacketLen());
-			memcpy(txData, returnFunc.GetPacket(), returnFunc.GetPacketLen());
+			char* txData = (char*) malloc(ipcFunction.GetPacketLen());
+			memcpy(txData, ipcFunction.GetPacket(), ipcFunction.GetPacketLen());
 		
 			// Create the ZMQ message and then broadcast it
 			zmq_msg_t txMsg;
-			zmq_msg_init_data(&txMsg, txData, returnFunc.GetPacketLen(), IPCRabbithole::ZMQDestroyMsgData, NULL);
+			zmq_msg_init_data(&txMsg, txData, ipcFunction.GetPacketLen(), IPCRabbithole::ZMQDestroyMsgData, NULL);
 			
 			zmq_sendmsg(rabbithole->zmqSocket, &txMsg, ZMQ_DONTWAIT);
 			
@@ -163,7 +162,7 @@ void* IPCRabbithole::ThreadedRX(void* rabbitholePtr)
  * FUNCTIONS
 \*===============================================================*/
 
-void IPCRabbithole::SetEventForBroadcast(IPCCoD4Event* event)
+void IPCRabbithole::SetEventForBroadcast(IPCEvent* event)
 {
 	std::unique_lock<std::mutex> lck(this->lockQueueEvents);
 	
@@ -194,7 +193,7 @@ void IPCRabbithole::SetEventForBroadcast(IPCCoD4Event* event)
 	this->SignalEventSend();
 }
 
-void IPCRabbithole::DestroyEvent(IPCCoD4Event* event)
+void IPCRabbithole::DestroyEvent(IPCEvent* event)
 {
 	unsigned int s = this->queueEvents.size();
 	for(unsigned int i = 0; i < s; i++)

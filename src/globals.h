@@ -10,6 +10,12 @@ extern struct IPCTypes {
 	static const unsigned char ch   = 0x03; // Characters
 } IPCTypes;
 
+struct IPCReturn {
+	bool                returnVoid;
+	void*               returnPointer;
+	const unsigned char returnType;
+};
+
 extern bool WONDERLANDX_DBG;
 extern bool WONDERLANDX_EVENT_DBG;
 extern bool WONDERLANDX_RTN_FUNC_DBG;

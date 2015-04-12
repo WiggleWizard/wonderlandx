@@ -28,6 +28,8 @@
 #include <vector>
 #include <stdint.h>
 
+using namespace std;
+
 class IPCFunction {
 public:
 	IPCFunction();
@@ -56,18 +58,15 @@ public:
      */
 	void Compile();
 	
-	/**
-	 * 
-     * @param function
-     */
-	void RegisterFunction(void* function);
-	
 /*===============================================================*\
  * GTORS & STORS
 \*===============================================================*/
 	
 	char* GetPacket();
 	uint32_t GetPacketLen();
+	
+	vector<void*>*   GetArgs();
+	vector<uint8_t>* GetArgTypes();
 	
 /*===============================================================*\
  * VARIABLES
@@ -76,17 +75,18 @@ public:
 	void*   functionPtr;
 	uint8_t functionType;
 	char*   functionName;
+	
+	void*   returnPointer;
+	uint8_t returnType;
 private:
 	uint32_t clientID;
 	uint32_t packetID;
 	
-	std::vector<void*>   argv;
-	std::vector<uint8_t> argt;
+	vector<void*>*   argv;
+	vector<uint8_t>* argt;
 	
 	uint32_t packetLen;
 	char*    packet;
-	
-	std::vector<void*> functions;
 };
 
 #endif	/* IPC_RETURN_FUNC_H */

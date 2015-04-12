@@ -8,7 +8,7 @@
 #include "globals.h"
 #include "logger.h"
 
-IPCCoD4Event::IPCCoD4Event(char* eventName)
+IPCEvent::IPCEvent(char* eventName)
 {
 	this->compiled = false;
 	this->packet   = NULL;
@@ -18,7 +18,7 @@ IPCCoD4Event::IPCCoD4Event(char* eventName)
 	this->argt.reserve(5);
 }
 
-IPCCoD4Event::~IPCCoD4Event()
+IPCEvent::~IPCEvent()
 {
 	// Free up memory
 	unsigned int args = this->argv.size();
@@ -36,7 +36,7 @@ IPCCoD4Event::~IPCCoD4Event()
  * 
 \*===============================================================*/
 
-void IPCCoD4Event::AddArgument(void* arg, unsigned int type)
+void IPCEvent::AddArgument(void* arg, unsigned int type)
 {
 	void* argv = arg;
 	
@@ -51,7 +51,7 @@ void IPCCoD4Event::AddArgument(void* arg, unsigned int type)
 	this->argt.push_back(type);
 }
 	
-void IPCCoD4Event::Compile()
+void IPCEvent::Compile()
 {
 	std::lock_guard<std::mutex> lock(this->compileLock);
 	
@@ -144,34 +144,34 @@ void IPCCoD4Event::Compile()
  * GTORS & STORS
 \*===============================================================*/
 
-bool IPCCoD4Event::IsCompiled()
+bool IPCEvent::IsCompiled()
 {
 	return this->compiled;
 }
 
-char* IPCCoD4Event::GetPacket()
+char* IPCEvent::GetPacket()
 {	
 	return this->packet;
 }
 
-unsigned int IPCCoD4Event::GetPacketSize()
+unsigned int IPCEvent::GetPacketSize()
 {
 	return this->packetLen;
 }
 
-char* IPCCoD4Event::GetName()
+char* IPCEvent::GetName()
 {
 	return this->eventName;
 }
 
-void IPCCoD4Event::Sent()
+void IPCEvent::Sent()
 {
 	std::lock_guard<std::mutex> lock(this->sentTimeLock);
 	
 	this->sent++;
 }
 
-unsigned int IPCCoD4Event::SentTimes()
+unsigned int IPCEvent::SentTimes()
 {
 	std::lock_guard<std::mutex> lock(this->sentTimeLock);
 	

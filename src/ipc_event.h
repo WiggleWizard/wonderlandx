@@ -8,12 +8,12 @@
 
 #include "globals.h"
 
-class IPCCoD4Event {
+class IPCEvent {
 public:
-	IPCCoD4Event(char* eventName);
+	IPCEvent(char* eventName);
 
-	IPCCoD4Event(const IPCCoD4Event& orig);
-	virtual ~IPCCoD4Event();
+	IPCEvent(const IPCEvent& orig);
+	virtual ~IPCEvent();
 	
 /*===============================================================*\
  * 

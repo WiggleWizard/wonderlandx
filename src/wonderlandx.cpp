@@ -56,7 +56,7 @@ PCL void OnPlayerConnect(int clientnum, netadr_t* netaddress, char* pbguid, char
 			(netaddress->ip[1] << 8)  |
 			(netaddress->ip[0]);
 	
-	IPCCoD4Event* event = new IPCCoD4Event("JOIN");
+	IPCEvent* event = new IPCEvent("JOIN");
 	event->AddArgument((void*) clientnum, IPCTypes::uint);
 	event->AddArgument((void*) ipAddr, IPCTypes::uint);
 	event->AddArgument((void*) Plugin_GetPlayerGUID(clientnum), IPCTypes::ch);
@@ -73,7 +73,7 @@ PCL void OnMessageSent(char* message, int slot, qboolean *show, int mode)
 	// because Alice will deal with them.
 	*show = qfalse;
 	
-	IPCCoD4Event* event = new IPCCoD4Event("CHAT");
+	IPCEvent* event = new IPCEvent("CHAT");
 	event->AddArgument((void*) slot, IPCTypes::uint);
 	event->AddArgument((void*) message, IPCTypes::ch);
 	
@@ -81,3 +81,6 @@ PCL void OnMessageSent(char* message, int slot, qboolean *show, int mode)
 	
 	rabbithole->SignalEventSend();
 }
+
+
+
