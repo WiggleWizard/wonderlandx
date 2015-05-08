@@ -5,16 +5,11 @@
 #define PLUGIN_VERSION_MINOR 2;
 
 extern struct IPCTypes {
+	static const unsigned char null = 0x00; // NULL
 	static const unsigned char uint = 0x01; // Unsigned int
 	static const unsigned char sint = 0x02; // Signed int
 	static const unsigned char ch   = 0x03; // Characters
 } IPCTypes;
-
-struct IPCReturn {
-	bool                returnVoid;
-	void*               returnPointer;
-	const unsigned char returnType;
-};
 
 extern bool WONDERLANDX_DBG;
 extern bool WONDERLANDX_EVENT_DBG;

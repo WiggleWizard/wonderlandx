@@ -50,6 +50,8 @@ public:
 	
 	/**
 	 * Executes the function and puts the return into public variables.
+	 * 
+	 * Warning: Deprecated
      */
 	void Execute();
 	
@@ -78,6 +80,7 @@ public:
 	
 	void*   returnPointer;
 	uint8_t returnType;
+	bool    returnVoid;
 private:
 	uint32_t clientID;
 	uint32_t packetID;

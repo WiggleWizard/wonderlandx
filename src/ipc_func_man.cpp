@@ -1,9 +1,11 @@
 #include "ipc_func_man.h"
 #include "ipc_function.h"
+#include "ipc_return.h"
 
 #include <pinc.h>
 
 #include <stdint.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -12,6 +14,9 @@ IPCFuncMan::IPCFuncMan()
 	// Reserve some space for the registered IPC functions
 	this->functions.reserve(5);
 	this->functionNames.reserve(5);
+	
+	// Register the functions
+	this->RegisterFunction(IPCFuncMan::GetMaxSlots, "GETSLOTCOUNT");
 }
 
 IPCFuncMan::IPCFuncMan(const IPCFuncMan& orig) {}
@@ -36,9 +41,12 @@ void IPCFuncMan::ExecuteIPCFunction(IPCFunction* ipcFunction)
 	{
 		if(strcmp(this->functionNames[i], ipcFunction->functionName) == 0)
 		{
+			// Execute the registered function
 			IPCReturn ipcReturn = this->functions[i](ipcFunction->GetArgs(), ipcFunction->GetArgTypes());
 			
-			
+			ipcFunction->returnPointer = ipcReturn.GetReturnPointer();
+			ipcFunction->returnType    = ipcReturn.GetReturnType();
+			ipcFunction->returnVoid    = ipcReturn.IsVoid();
 		}
 	}
 }
@@ -49,13 +57,10 @@ void IPCFuncMan::ExecuteIPCFunction(IPCFunction* ipcFunction)
 
 IPCReturn* IPCFuncMan::GetMaxSlots(std::vector<void*>* argv, std::vector<uint8_t>* args)
 {
-	IPCReturn* ipcReturn = new IPCReturn();
-	
 	uint32_t s = Plugin_GetSlotCount();
-	memcpy(ipcReturn->returnPointer, &s, 4);
 	
-	ipcReturn->returnType = IPCTypes::uint;
-	ipcReturn->returnVoid = false;
+	void* ipcReturnPointer = malloc(4);
+	memcpy(ipcReturnPointer, &s, 4);
 	
-	return ipcReturn;
+	return new IPCReturn(ipcReturnPointer, IPCTypes::uint);
 }

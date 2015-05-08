@@ -9,6 +9,7 @@
 #include "logger.h"
 #include "ipc_function.h"
 #include "ipc_func_man.h"
+#include "ipc_return.h"
 
 IPCRabbithole::IPCRabbithole(int serverPort)
 {	
@@ -135,13 +136,18 @@ void* IPCRabbithole::ThreadedRX(void* rabbitholePtr)
 			IPCFunction ipcFunction = IPCFunction();
 			ipcFunction.Parse(rxData, false);
 			
-			// Now we execute the function that was sent and we return any results
-			// of the executed function.
-			this->ipcFuncMan->ExecuteIPCFunction(ipcFunction);
+			// Now we execute the function that was sent. The input IPCFunction
+			// is modified to include the return ptr and return type for compile
+			// time.
+			this->ipcFuncMan->ExecuteIPCFunction(&ipcFunction);
+			
+			// Compile the IPCFunction so we can send the results to the rabbithole
 			ipcFunction.Compile();
 			
-			// We have to copy the data into a temporary memory section in order to
-			// handle data racing.
+			// We have to copy the data into a temporary memory section because
+			// if we try to delete the data right after the send function we
+			// end up with a data race because ZMQ hasn't finished with the message
+			// by the time we manually delete the data.
 			char* txData = (char*) malloc(ipcFunction.GetPacketLen());
 			memcpy(txData, ipcFunction.GetPacket(), ipcFunction.GetPacketLen());
 		

@@ -131,16 +131,7 @@ void IPCFunction::Execute()
 {
 	Logger::Debug("Attempting to execute function '%s' for client %i", this->functionName, this->clientID);
 	
-	if(strcmp(this->functionName, "GETSLOTCOUNT") == 0)
-	{
-		this->functionPtr = new char[4];
-		
-		uint32_t s = Plugin_GetSlotCount();
-		memcpy(this->functionPtr, &s, 4);
-		
-		this->functionType = IPCTypes::uint;
-	}
-	else if(strcmp(this->functionName, "PLAYERDATA") == 0)
+	if(strcmp(this->functionName, "PLAYERDATA") == 0)
 	{
 		std::stringstream allPlayerData;
 		uint32_t s = Plugin_GetSlotCount();
@@ -185,17 +176,20 @@ void IPCFunction::Compile()
 	}
 	
 	// Calculate packet length
-	this->packetLen = 1;  // Packet type
+	this->packetLen  = 1;  // Packet type
 	this->packetLen += 4; // Client ID
 	this->packetLen += 4; // Packet ID
 	this->packetLen += 1; // Return type
 	
-	if(this->functionType == IPCTypes::uint || this->functionType == IPCTypes::sint)
-		this->packetLen += 4;
-	else if(this->functionType == IPCTypes::ch)
+	if(!this->returnVoid)
 	{
-		this->packetLen += 4;
-		this->packetLen += strlen((char*) this->functionPtr);
+		if(this->functionType == IPCTypes::uint || this->functionType == IPCTypes::sint)
+			this->packetLen += 4;
+		else if(this->functionType == IPCTypes::ch)
+		{
+			this->packetLen += 4;
+			this->packetLen += strlen((char*) this->functionPtr);
+		}
 	}
 	
 	// Construct a new packet
@@ -217,22 +211,27 @@ void IPCFunction::Compile()
 	cursor += 4;
 	
 	// - Return type
-	memcpy(this->packet + cursor, &this->functionType, 1);
-	cursor += 1;
 	
-	// - Return value
-	if(this->functionType == IPCTypes::uint || this->functionType == IPCTypes::sint)
+	// If there is no return then don't put it into the packet.
+	if(!this->returnVoid)
 	{
-		s = htonl(*(uint32_t*) this->functionPtr);
-		memcpy(this->packet + cursor, &s, 4);
-	}
-	else if(this->functionType == IPCTypes::ch)
-	{
-		s = htonl(strlen((char*) this->functionPtr));
-		memcpy(this->packet + cursor, &s, 4);
-		cursor += 4;
-		
-		memcpy(this->packet + cursor, (char*) this->functionPtr, strlen((char*) this->functionPtr));
+		memcpy(this->packet + cursor, &this->returnType, 1);
+		cursor += 1;
+
+		// - Return value
+		if(this->returnType == IPCTypes::uint || this->returnType == IPCTypes::sint)
+		{
+			s = htonl(*(uint32_t*) this->returnPointer);
+			memcpy(this->packet + cursor, &s, 4);
+		}
+		else if(this->returnType == IPCTypes::ch)
+		{
+			s = htonl(strlen((char*) this->returnPointer));
+			memcpy(this->packet + cursor, &s, 4);
+			cursor += 4;
+
+			memcpy(this->packet + cursor, (char*) this->returnPointer, strlen((char*) this->returnPointer));
+		}
 	}
 }
 

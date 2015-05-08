@@ -68,8 +68,6 @@ public:
 	
 	void SignalEventSend();
 	
-	void ExecuteIPCFunction(IPCFunction* ipcFunction);
-	
 	/**
 	 * Used by ZMQ to destroy msg data after it's sent.
 	 * 
