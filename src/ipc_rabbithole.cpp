@@ -8,7 +8,6 @@
 
 #include "logger.h"
 #include "ipc_function.h"
-#include "ipc_func_man.h"
 #include "ipc_return.h"
 
 IPCRabbithole::IPCRabbithole(int serverPort)
@@ -136,10 +135,12 @@ void* IPCRabbithole::ThreadedRX(void* rabbitholePtr)
 			IPCFunction ipcFunction = IPCFunction();
 			ipcFunction.Parse(rxData, false);
 			
+			Logger::Debug("Recieved function call: %s", ipcFunction.functionName);
+			
 			// Now we execute the function that was sent. The input IPCFunction
 			// is modified to include the return ptr and return type for compile
 			// time.
-			this->ipcFuncMan->ExecuteIPCFunction(&ipcFunction);
+			rabbithole->ipcFuncMan->ExecuteIPCFunction(&ipcFunction);
 			
 			// Compile the IPCFunction so we can send the results to the rabbithole
 			ipcFunction.Compile();

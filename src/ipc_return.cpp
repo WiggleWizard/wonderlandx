@@ -3,10 +3,10 @@
 
 IPCReturn::IPCReturn()
 {
-	this->returnType    = IPCTypes::null;
+	this->returnType = IPCTypes::null;
 }
 
-IPCReturn::IPCReturn(void* pointer, const unsigned char type)
+IPCReturn::IPCReturn(void* pointer, unsigned char type)
 {
 	this->returnPointer = pointer;
 	this->returnType    = type;
@@ -20,12 +20,12 @@ void* IPCReturn::GetReturnPointer()
 	return this->returnPointer;
 }
 
-const unsigned char* IPCReturn::GetReturnPointer()
+unsigned char IPCReturn::GetReturnType()
 {
 	return this->returnType;
 }
 
 bool IPCReturn::IsVoid()
 {
-	return this->returnType == IPCTypes::null ? false : true;
+	return this->returnType == IPCTypes::null ? true : false;
 }

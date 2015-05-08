@@ -85,8 +85,8 @@ private:
 	uint32_t clientID;
 	uint32_t packetID;
 	
-	vector<void*>*   argv;
-	vector<uint8_t>* argt;
+	vector<void*>   argv;
+	vector<uint8_t> argt;
 	
 	uint32_t packetLen;
 	char*    packet;

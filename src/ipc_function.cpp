@@ -13,8 +13,6 @@
 
 IPCFunction::IPCFunction()
 {
-	this->argv = new std::vector<void*>();
-	this->argt = new std::vector<char*>();
 	this->argv.reserve(5);
 	this->argt.reserve(5);
 	
@@ -50,6 +48,12 @@ IPCFunction::~IPCFunction()
 		
 	delete [] this->packet;
 	this->packet = NULL;
+	
+	if(this->returnType == IPCTypes::uint || this->returnType == IPCTypes::sint)
+		delete (uint32_t*) this->returnPointer;
+	else if(this->returnType == IPCTypes::ch)
+		delete [] (char*) this->returnPointer;
+	this->returnPointer = NULL;
 }
 
 
@@ -120,7 +124,7 @@ void IPCFunction::Parse(char* payload, bool destructive)
 			char* str = new char[s + 1];
 			memcpy(str, payload + cursor, s);
 			str[s] = '\0';
-			this->argv->push_back(str);
+			this->argv.push_back(str);
 			
 			cursor += s;
 		}
@@ -183,9 +187,9 @@ void IPCFunction::Compile()
 	
 	if(!this->returnVoid)
 	{
-		if(this->functionType == IPCTypes::uint || this->functionType == IPCTypes::sint)
+		if(this->returnType == IPCTypes::uint || this->returnType == IPCTypes::sint)
 			this->packetLen += 4;
-		else if(this->functionType == IPCTypes::ch)
+		else if(this->returnType == IPCTypes::ch)
 		{
 			this->packetLen += 4;
 			this->packetLen += strlen((char*) this->functionPtr);
@@ -254,7 +258,7 @@ std::vector<void*>* IPCFunction::GetArgs()
 	return &this->argv;
 }
 
-std::vector<char*>* IPCFunction::GetArgTypes()
+std::vector<uint8_t>* IPCFunction::GetArgTypes()
 {
 	return &this->argt;
 }

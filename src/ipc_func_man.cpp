@@ -1,6 +1,7 @@
 #include "ipc_func_man.h"
 #include "ipc_function.h"
 #include "ipc_return.h"
+#include "logger.h"
 
 #include <pinc.h>
 
@@ -26,7 +27,7 @@ IPCFuncMan::~IPCFuncMan() {}
  * FUNCTIONS
 \*===============================================================*/
 
-void IPCFuncMan::RegisterFunction(IPCReturn (*function)(vector<void*>*, vector<uint8_t>*), const char* functionName)
+void IPCFuncMan::RegisterFunction(IPCReturn* (*function)(vector<void*>*, vector<uint8_t>*), const char* functionName)
 {
 	this->functionNames.push_back(functionName);
 	this->functions.push_back(function);
@@ -42,11 +43,15 @@ void IPCFuncMan::ExecuteIPCFunction(IPCFunction* ipcFunction)
 		if(strcmp(this->functionNames[i], ipcFunction->functionName) == 0)
 		{
 			// Execute the registered function
-			IPCReturn ipcReturn = this->functions[i](ipcFunction->GetArgs(), ipcFunction->GetArgTypes());
+			IPCReturn* ipcReturn = this->functions[i](ipcFunction->GetArgs(), ipcFunction->GetArgTypes());
 			
-			ipcFunction->returnPointer = ipcReturn.GetReturnPointer();
-			ipcFunction->returnType    = ipcReturn.GetReturnType();
-			ipcFunction->returnVoid    = ipcReturn.IsVoid();
+			ipcFunction->returnPointer = ipcReturn->GetReturnPointer();
+			ipcFunction->returnType    = ipcReturn->GetReturnType();
+			ipcFunction->returnVoid    = ipcReturn->IsVoid();
+			
+			// Destroy the return function, at this point we rely on the IPCFunction
+			// to destroy any persistent memory that was made while creating an IPCReturn.
+			delete ipcReturn;
 		}
 	}
 }
@@ -59,6 +64,7 @@ IPCReturn* IPCFuncMan::GetMaxSlots(std::vector<void*>* argv, std::vector<uint8_t
 {
 	uint32_t s = Plugin_GetSlotCount();
 	
+	// Create a pointer to an int
 	void* ipcReturnPointer = malloc(4);
 	memcpy(ipcReturnPointer, &s, 4);
 	

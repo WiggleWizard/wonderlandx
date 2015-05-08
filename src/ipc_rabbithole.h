@@ -9,6 +9,7 @@
 
 #include "ipc_event.h"
 #include "ipc_function.h"
+#include "ipc_func_man.h"
 
 class IPCRabbithole {
 public:

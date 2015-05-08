@@ -6,6 +6,7 @@
 
 #include "globals.h"
 #include "ipc_function.h"
+#include "ipc_return.h"
 
 using namespace std;
 
@@ -25,7 +26,7 @@ public:
 	 * @param functionName Reference is stored. Memory is managed internally.
      * @param function     Reference is stored. Memory is managed internally.
      */
-	void RegisterFunction(IPCReturn (*function)(std::vector<void*>*, std::vector<uint8_t>*), const char* functionName);
+	void RegisterFunction(IPCReturn* (*function)(std::vector<void*>*, std::vector<uint8_t>*), const char* functionName);
 	
 	/**
 	 * IPCFunction is modified once executed. This function does not compile
@@ -45,7 +46,7 @@ public:
 	static IPCReturn* GetMaxSlots(vector<void*>* argv, vector<uint8_t>* argt);
 	
 private:
-	std::vector<IPCReturn (*)(std::vector<void*>*, std::vector<uint8_t>*)> functions;
+	std::vector<IPCReturn* (*)(std::vector<void*>*, std::vector<uint8_t>*)> functions;
 	std::vector<const char*> functionNames;
 };
 
