@@ -49,13 +49,6 @@ public:
 	void Parse(char* payload, bool destructive);
 	
 	/**
-	 * Executes the function and puts the return into public variables.
-	 * 
-	 * Warning: Deprecated
-     */
-	void Execute();
-	
-	/**
 	 * Compiles the return into a return function packet.
      */
 	void Compile();

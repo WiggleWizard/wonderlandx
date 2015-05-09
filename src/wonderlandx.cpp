@@ -81,6 +81,3 @@ PCL void OnMessageSent(char* message, int slot, qboolean *show, int mode)
 	
 	rabbithole->SignalEventSend();
 }
-
-
-

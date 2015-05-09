@@ -2,7 +2,6 @@
 
 #include <netinet/in.h>
 #include <cstring>
-#include <sstream>
 #include <string>
 #include <arpa/inet.h>
 
@@ -128,45 +127,6 @@ void IPCFunction::Parse(char* payload, bool destructive)
 			
 			cursor += s;
 		}
-	}
-}
-
-void IPCFunction::Execute()
-{
-	Logger::Debug("Attempting to execute function '%s' for client %i", this->functionName, this->clientID);
-	
-	if(strcmp(this->functionName, "PLAYERDATA") == 0)
-	{
-		std::stringstream allPlayerData;
-		uint32_t s = Plugin_GetSlotCount();
-		
-		for(unsigned int i = 0; i < s; i++)
-		{	
-			client_t* clientData = Plugin_GetClientForClientNum(i);
-			netchan_t netChan    = clientData->netchan;
-			
-			// Collate the user's data into a string
-			if(clientData->state > CS_FREE)
-			{
-				const char* ipAddr = Plugin_NET_AdrToStringShort(&netChan.remoteAddress);
-				
-				allPlayerData << i << "\\\\" << ipAddr << "\\\\";
-				allPlayerData << Plugin_GetPlayerGUID(i) << "\\\\" << Plugin_GetPlayerName(i);
-				
-				allPlayerData << "\n";
-			}
-		}
-		
-		allPlayerData << '\0';
-		
-		// Set return type and return value
-		this->functionType = IPCTypes::ch;
-		
-		unsigned int size = allPlayerData.tellp();
-		this->functionPtr = new char[size];
-		std::string tmp = allPlayerData.str();
-		
-		memcpy(this->functionPtr, tmp.c_str(), size);
 	}
 }
 

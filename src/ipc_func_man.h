@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <stdint.h>
+#include <sstream>
 
 #include "globals.h"
 #include "ipc_function.h"
@@ -37,13 +38,14 @@ public:
 	 * 
      * @param ipcFunction
      */
-	void ExecuteIPCFunction(IPCFunction* ipcFunction);
+	bool ExecuteIPCFunction(IPCFunction* ipcFunction);
 	
 /*===============================================================*\
  * IPC CALLABLE FUNCTIONS
 \*===============================================================*/
 	
 	static IPCReturn* GetMaxSlots(vector<void*>* argv, vector<uint8_t>* argt);
+	static IPCReturn* GetAllPlayerData(vector<void*>* argv, vector<uint8_t>* argt);
 	
 private:
 	std::vector<IPCReturn* (*)(std::vector<void*>*, std::vector<uint8_t>*)> functions;

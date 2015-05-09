@@ -137,10 +137,14 @@ void* IPCRabbithole::ThreadedRX(void* rabbitholePtr)
 			
 			Logger::Debug("Recieved function call: %s", ipcFunction.functionName);
 			
-			// Now we execute the function that was sent. The input IPCFunction
+			// Now we attempt to execute the function that was sent. The input IPCFunction
 			// is modified to include the return ptr and return type for compile
 			// time.
-			rabbithole->ipcFuncMan->ExecuteIPCFunction(&ipcFunction);
+			if(!rabbithole->ipcFuncMan->ExecuteIPCFunction(&ipcFunction))
+			{
+				Logger::Debug("No function was found to execute (%s)", ipcFunction.functionName);
+				continue;
+			}
 			
 			// Compile the IPCFunction so we can send the results to the rabbithole
 			ipcFunction.Compile();
