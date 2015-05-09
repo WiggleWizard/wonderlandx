@@ -18,6 +18,7 @@ IPCFuncMan::IPCFuncMan()
 	
 	// Register the functions
 	this->RegisterFunction(IPCFuncMan::GetMaxSlots, "GETSLOTCOUNT");
+	this->RegisterFunction(IPCFuncMan::GetAllPlayerData, "PLAYERDATA");
 }
 
 IPCFuncMan::IPCFuncMan(const IPCFuncMan& orig) {}
@@ -82,11 +83,11 @@ IPCReturn* IPCFuncMan::GetAllPlayerData(vector<void*>* argv, vector<uint8_t>* ar
 {
 	std::stringstream allPlayerData;
 	uint32_t s = Plugin_GetSlotCount();
+	
+	allPlayerData << "PLAYERDATA";
 
 	for(unsigned int i = 0; i < s; i++)
-	{
-		Logger::Debug("HERE");
-		
+	{		
 		client_t* clientData = Plugin_GetClientForClientNum(i);
 		netchan_t netChan    = clientData->netchan;
 
@@ -104,13 +105,11 @@ IPCReturn* IPCFuncMan::GetAllPlayerData(vector<void*>* argv, vector<uint8_t>* ar
 
 	allPlayerData << '\0';
 	
-	
-
 	// Pull the string out of the string stream and copy it into a persistent
 	// pointer to pass on to the return.
 	unsigned int size = allPlayerData.tellp();
 	char* ipcReturnPointer = new char[size];
 	memcpy(ipcReturnPointer, allPlayerData.str().c_str(), size);
 	
-	new IPCReturn(ipcReturnPointer, IPCTypes::ch);
+	return new IPCReturn(ipcReturnPointer, IPCTypes::ch);
 }

@@ -152,7 +152,7 @@ void IPCFunction::Compile()
 		else if(this->returnType == IPCTypes::ch)
 		{
 			this->packetLen += 4;
-			this->packetLen += strlen((char*) this->functionPtr);
+			this->packetLen += strlen((char*) this->returnPointer);
 		}
 	}
 	
