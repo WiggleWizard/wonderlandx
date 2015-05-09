@@ -83,8 +83,6 @@ IPCReturn* IPCFuncMan::GetAllPlayerData(vector<void*>* argv, vector<uint8_t>* ar
 {
 	std::stringstream allPlayerData;
 	uint32_t s = Plugin_GetSlotCount();
-	
-	allPlayerData << "PLAYERDATA";
 
 	for(unsigned int i = 0; i < s; i++)
 	{		
