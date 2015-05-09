@@ -19,6 +19,7 @@ IPCFuncMan::IPCFuncMan()
 	// Register the functions
 	this->RegisterFunction(IPCFuncMan::GetMaxSlots, "GETSLOTCOUNT");
 	this->RegisterFunction(IPCFuncMan::GetAllPlayerData, "PLAYERDATA");
+	this->RegisterFunction(IPCFuncMan::ChatPrintf, "CHATPRINTF");
 }
 
 IPCFuncMan::IPCFuncMan(const IPCFuncMan& orig) {}
@@ -47,7 +48,7 @@ bool IPCFuncMan::ExecuteIPCFunction(IPCFunction* ipcFunction)
 		{
 			// Execute the registered function
 			IPCReturn* ipcReturn = this->functions[i](ipcFunction->GetArgs(), ipcFunction->GetArgTypes());
-			
+						
 			ipcFunction->returnPointer = ipcReturn->GetReturnPointer();
 			ipcFunction->returnType    = ipcReturn->GetReturnType();
 			ipcFunction->returnVoid    = ipcReturn->IsVoid();
@@ -68,7 +69,7 @@ bool IPCFuncMan::ExecuteIPCFunction(IPCFunction* ipcFunction)
  * IPC CALLABLE FUNCTIONS
 \*===============================================================*/
 
-IPCReturn* IPCFuncMan::GetMaxSlots(std::vector<void*>* argv, std::vector<uint8_t>* args)
+IPCReturn* IPCFuncMan::GetMaxSlots(std::vector<void*>* argv, std::vector<uint8_t>* argt)
 {
 	uint32_t s = Plugin_GetSlotCount();
 	
@@ -110,4 +111,15 @@ IPCReturn* IPCFuncMan::GetAllPlayerData(vector<void*>* argv, vector<uint8_t>* ar
 	memcpy(ipcReturnPointer, allPlayerData.str().c_str(), size);
 	
 	return new IPCReturn(ipcReturnPointer, IPCTypes::ch);
+}
+
+IPCReturn* IPCFuncMan::ChatPrintf(std::vector<void*>* argv, std::vector<uint8_t>* argt)
+{
+	// Assert 2 arguments total
+	if(argv->size() != 2)
+		return NULL;
+
+	Plugin_ChatPrintf((int) argv->at(0), (char*) argv->at(1));
+	
+	return new IPCReturn();
 }

@@ -3,7 +3,8 @@
 
 IPCReturn::IPCReturn()
 {
-	this->returnType = IPCTypes::null;
+	this->returnType    = IPCTypes::null;
+	this->returnPointer = 0x00;
 }
 
 IPCReturn::IPCReturn(void* pointer, unsigned char type)

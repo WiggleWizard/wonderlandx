@@ -142,11 +142,16 @@ void* IPCRabbithole::ThreadedRX(void* rabbitholePtr)
 			//
 			// The input IPCFunction is modified to include the return ptr and
 			// return type for compile time.
-			if(!rabbithole->ipcFuncMan->ExecuteIPCFunction(&ipcFunction))
+			int execResult = rabbithole->ipcFuncMan->ExecuteIPCFunction(&ipcFunction);
+			
+			if(!execResult)
 			{
 				Logger::Debug("IPC function (%s) not registered to execute", ipcFunction.functionName);
 				continue;
 			}
+			
+			if(ipcFunction.returnVoid)
+				continue;
 			
 			// Compile the IPCFunction so we can send the results to the rabbithole
 			ipcFunction.Compile();
