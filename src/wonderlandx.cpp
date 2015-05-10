@@ -81,3 +81,15 @@ PCL void OnMessageSent(char* message, int slot, qboolean *show, int mode)
 	
 	rabbithole->SignalEventSend();
 }
+
+PCL void OnPlayerDC(client_t* client, const char* reason)
+{
+	// Majik numberrr
+	int clientnum = (int) client / 0x090b4f8c - 1;
+	
+	IPCEvent* event = new IPCEvent("DC");
+	event->AddArgument((void*) clientnum, IPCTypes::uint);
+	
+	rabbithole->SetEventForBroadcast(event);
+	rabbithole->SignalEventSend();
+}
