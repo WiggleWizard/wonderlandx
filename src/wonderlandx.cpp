@@ -60,7 +60,7 @@ PCL void OnPlayerConnect(int clientnum, netadr_t* netaddress, char* pbguid, char
 	event->AddArgument((void*) clientnum, IPCTypes::uint);
 	event->AddArgument((void*) ipAddr, IPCTypes::uint);
 	event->AddArgument((void*) Plugin_GetPlayerGUID(clientnum), IPCTypes::ch);
-	event->AddArgument((void*) Plugin_GetPlayerName(clientnum), IPCTypes::ch);
+	event->AddArgument((void*) userinfo, IPCTypes::ch);
 	
 	rabbithole->SetEventForBroadcast(event);
 	

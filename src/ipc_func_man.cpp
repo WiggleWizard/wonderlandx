@@ -17,9 +17,10 @@ IPCFuncMan::IPCFuncMan()
 	this->functionNames.reserve(5);
 	
 	// Register the functions
-	this->RegisterFunction(IPCFuncMan::GetMaxSlots, "GETSLOTCOUNT");
+	this->RegisterFunction(IPCFuncMan::GetMaxSlots,      "GETSLOTCOUNT");
 	this->RegisterFunction(IPCFuncMan::GetAllPlayerData, "PLAYERDATA");
-	this->RegisterFunction(IPCFuncMan::ChatPrintf, "CHATPRINTF");
+	this->RegisterFunction(IPCFuncMan::ChatPrintf,       "CHATPRINTF");
+	this->RegisterFunction(IPCFuncMan::BcastPrintf,      "BCASTPRINTF");
 }
 
 IPCFuncMan::IPCFuncMan(const IPCFuncMan& orig) {}
@@ -120,6 +121,17 @@ IPCReturn* IPCFuncMan::ChatPrintf(std::vector<void*>* argv, std::vector<uint8_t>
 		return NULL;
 
 	Plugin_ChatPrintf((int) argv->at(0), (char*) argv->at(1));
+	
+	return new IPCReturn();
+}
+
+IPCReturn* IPCFuncMan::BcastPrintf(std::vector<void*>* argv, std::vector<uint8_t>* argt)
+{
+	// Assert 1 argument total
+	if(argv->size() != 1)
+		return NULL;
+
+	Plugin_ChatPrintf(-1, (char*) argv->at(0));
 	
 	return new IPCReturn();
 }
