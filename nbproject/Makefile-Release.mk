@@ -21,8 +21,8 @@ FC=gfortran
 AS=as
 
 # Macros
-CND_PLATFORM=GNU-MacOSX
-CND_DLIB_EXT=dylib
+CND_PLATFORM=GNU-Linux-x86
+CND_DLIB_EXT=so
 CND_CONF=Release
 CND_DISTDIR=dist
 CND_BUILDDIR=build
@@ -40,6 +40,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/ipc_func_man.o \
 	${OBJECTDIR}/src/ipc_function.o \
 	${OBJECTDIR}/src/ipc_rabbithole.o \
+	${OBJECTDIR}/src/ipc_return.o \
 	${OBJECTDIR}/src/logger.o \
 	${OBJECTDIR}/src/wonderlandx.o
 
@@ -92,6 +93,11 @@ ${OBJECTDIR}/src/ipc_rabbithole.o: src/ipc_rabbithole.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ipc_rabbithole.o src/ipc_rabbithole.cpp
+
+${OBJECTDIR}/src/ipc_return.o: src/ipc_return.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ipc_return.o src/ipc_return.cpp
 
 ${OBJECTDIR}/src/logger.o: src/logger.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src

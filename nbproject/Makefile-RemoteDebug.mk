@@ -40,6 +40,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/src/ipc_func_man.o \
 	${OBJECTDIR}/src/ipc_function.o \
 	${OBJECTDIR}/src/ipc_rabbithole.o \
+	${OBJECTDIR}/src/ipc_return.o \
 	${OBJECTDIR}/src/logger.o \
 	${OBJECTDIR}/src/wonderlandx.o
 
@@ -92,6 +93,11 @@ ${OBJECTDIR}/src/ipc_rabbithole.o: src/ipc_rabbithole.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Ilibs/zeromq-4.0.5/dist/include -Ilibs/CoD4X17a/plugins -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ipc_rabbithole.o src/ipc_rabbithole.cpp
+
+${OBJECTDIR}/src/ipc_return.o: src/ipc_return.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Ilibs/zeromq-4.0.5/dist/include -Ilibs/CoD4X17a/plugins -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/ipc_return.o src/ipc_return.cpp
 
 ${OBJECTDIR}/src/logger.o: src/logger.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
