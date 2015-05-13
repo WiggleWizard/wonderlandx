@@ -48,17 +48,12 @@ PCL void OnInfoRequest(pluginInfo_t *info)
 }
 
 PCL void OnPlayerConnect(int clientnum, netadr_t* netaddress, char* pbguid, char* userinfo, int authstatus, char* deniedmsg, int deniedmsgbufmaxlen)
-{
-	// Byte array to little endian
-	uint ipAddr = 
-			(netaddress->ip[3] << 24) |
-			(netaddress->ip[2] << 16) |
-			(netaddress->ip[1] << 8)  |
-			(netaddress->ip[0]);
+{	
+	const char* ipAddr = Plugin_NET_AdrToStringShort(netaddress);
 	
 	IPCEvent* event = new IPCEvent("JOIN");
 	event->AddArgument((void*) clientnum, IPCTypes::uint);
-	event->AddArgument((void*) ipAddr, IPCTypes::uint);
+	event->AddArgument((void*) ipAddr, IPCTypes::ch);
 	event->AddArgument((void*) Plugin_GetPlayerGUID(clientnum), IPCTypes::ch);
 	event->AddArgument((void*) userinfo, IPCTypes::ch);
 	
