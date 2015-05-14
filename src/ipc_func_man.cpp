@@ -19,8 +19,11 @@ IPCFuncMan::IPCFuncMan()
 	// Register the functions
 	this->RegisterFunction(IPCFuncMan::GetMaxSlots,      "GETSLOTCOUNT");
 	this->RegisterFunction(IPCFuncMan::GetAllPlayerData, "PLAYERDATA");
-	this->RegisterFunction(IPCFuncMan::ChatPrintf,       "CHATPRINTF");
+	this->RegisterFunction(IPCFuncMan::Tell,             "TELL");
 	this->RegisterFunction(IPCFuncMan::BcastPrintf,      "BCASTPRINTF");
+	this->RegisterFunction(IPCFuncMan::Announce,         "ANNOUNCE");
+	this->RegisterFunction(IPCFuncMan::BcastAnnounce,    "BCASTANNOUNCE");
+	this->RegisterFunction(IPCFuncMan::KickPlayer,       "KICK");
 }
 
 IPCFuncMan::IPCFuncMan(const IPCFuncMan& orig) {}
@@ -114,13 +117,15 @@ IPCReturn* IPCFuncMan::GetAllPlayerData(vector<void*>* argv, vector<uint8_t>* ar
 	return new IPCReturn(ipcReturnPointer, IPCTypes::ch);
 }
 
-IPCReturn* IPCFuncMan::ChatPrintf(std::vector<void*>* argv, std::vector<uint8_t>* argt)
+IPCReturn* IPCFuncMan::Tell(std::vector<void*>* argv, std::vector<uint8_t>* argt)
 {
 	// Assert 2 arguments total
 	if(argv->size() != 2)
 		return NULL;
+	
+	int playerID = *(int*) argv->at(0);
 
-	Plugin_ChatPrintf((int) argv->at(0), (char*) argv->at(1));
+	Plugin_ChatPrintf(playerID, (char*) argv->at(1));
 	
 	return new IPCReturn();
 }
@@ -132,6 +137,41 @@ IPCReturn* IPCFuncMan::BcastPrintf(std::vector<void*>* argv, std::vector<uint8_t
 		return NULL;
 
 	Plugin_ChatPrintf(-1, (char*) argv->at(0));
+	
+	return new IPCReturn();
+}
+
+IPCReturn* IPCFuncMan::Announce(std::vector<void*>* argv, std::vector<uint8_t>* argt)
+{
+	// Assert 1 argument total
+	if(argv->size() != 2)
+		return NULL;
+
+	Plugin_BoldPrintf((int) argv->at(0), (char*) argv->at(1));
+	
+	return new IPCReturn();
+}
+
+IPCReturn* IPCFuncMan::BcastAnnounce(std::vector<void*>* argv, std::vector<uint8_t>* argt)
+{
+	// Assert 1 argument total
+	if(argv->size() != 1)
+		return NULL;
+
+	Plugin_BoldPrintf(-1, (char*) argv->at(0));
+	
+	return new IPCReturn();
+}
+
+IPCReturn* IPCFuncMan::KickPlayer(std::vector<void*>* argv, std::vector<uint8_t>* argt)
+{	
+	// Assert 1 argument total
+	if(argv->size() != 2)
+		return NULL;
+	
+	int playerID = *(int*) argv->at(0);
+
+	Plugin_DropClient(playerID, (char*) argv->at(1));
 	
 	return new IPCReturn();
 }

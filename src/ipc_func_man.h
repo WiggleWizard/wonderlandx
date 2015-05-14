@@ -46,8 +46,11 @@ public:
 	
 	static IPCReturn* GetMaxSlots(vector<void*>* argv, vector<uint8_t>* argt);
 	static IPCReturn* GetAllPlayerData(vector<void*>* argv, vector<uint8_t>* argt);
-	static IPCReturn* ChatPrintf(vector<void*>* argv, vector<uint8_t>* argt);
+	static IPCReturn* Tell(vector<void*>* argv, vector<uint8_t>* argt);
 	static IPCReturn* BcastPrintf(vector<void*>* argv, vector<uint8_t>* argt);
+	static IPCReturn* Announce(vector<void*>* argv, vector<uint8_t>* argt);
+	static IPCReturn* BcastAnnounce(vector<void*>* argv, vector<uint8_t>* argt);
+	static IPCReturn* KickPlayer(vector<void*>* argv, vector<uint8_t>* argt);
 	
 private:
 	std::vector<IPCReturn* (*)(std::vector<void*>*, std::vector<uint8_t>*)> functions;
