@@ -8,7 +8,7 @@ import tarfile
 
 lib_dir = "../libs"
 
-cod4x17a_repo = "https://github.com/IceNinjaman/CoD4X17a_testing"
+cod4x17a_repo = "https://github.com/Zinglish/CoD4X17a-WonderlandX"
 zmq_repo      = "http://download.zeromq.org/zeromq-4.0.5.tar.gz"
 
 def pull_repo(repo_url, target_dir):
