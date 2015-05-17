@@ -6,6 +6,7 @@
 #include "ipc_rabbithole.h"
 #include "ipc_event.h"
 #include "logger.h"
+#include "limbo_man.h"
 
 IPCRabbithole* rabbithole;
 
@@ -27,8 +28,9 @@ PCL int OnInit()
 	
 	Logger::LogInfo("Initialising WonderlandX\n");
 	
-	int serverPort = Plugin_Cvar_VariableIntegerValue("net_port");
+	LimboMan::Instance()->SetLimboLimit(Plugin_GetSlotCount());
 	
+	int serverPort = Plugin_Cvar_VariableIntegerValue("net_port");
 	rabbithole = new IPCRabbithole(serverPort);
 	
 	return 0;
@@ -47,11 +49,51 @@ PCL void OnInfoRequest(pluginInfo_t *info)
 	strncpy(info->shortDescription, "Wonderland for CoD4X17a", sizeof(info->shortDescription));
 }
 
-PCL void OnPlayerConnect(int clientnum, netadr_t* netaddress, char* pbguid, char* userinfo, int authstatus, char* deniedmsg, int deniedmsgbufmaxlen)
-{	
+PCL void OnPlayerJoinReq(int clientnum, netadr_t* netaddress, char* pbguid, char* userinfo, int authstatus, char* deniedmsg, int deniedmsgbufmaxlen, qboolean* wait)
+{
+	bool isWaiting = LimboMan::Instance()->IsWaiting(clientnum);
+	bool isDenied  = LimboMan::Instance()->IsDenied(clientnum);
+	
+	// Allow the main thread to continue with dealing with the connection request
+	if(!isWaiting)
+		*wait = qfalse;
+	else
+		*wait = qtrue;
+	
+	if(isDenied)
+	{
+		size_t deniedLen = strnlen(deniedmsg, MAX_STRING_CHARS);
+		
+		strncpy(deniedmsg, LimboMan::Instance()->GetDenyReason(clientnum), deniedLen);
+		deniedmsgbufmaxlen = deniedLen;
+	}
+	
+	// If the slot has not been accepted yet then send the event
+	if(isWaiting)
+	{
+		const char* ipAddr = Plugin_NET_AdrToStringShort(netaddress);
+
+		IPCEvent* event = new IPCEvent("JOINREQ");
+		event->AddArgument((void*) clientnum, IPCTypes::uint);
+		event->AddArgument((void*) ipAddr, IPCTypes::ch);
+		event->AddArgument((void*) Plugin_GetPlayerGUID(clientnum), IPCTypes::ch);
+		event->AddArgument((void*) userinfo, IPCTypes::ch);
+
+		rabbithole->SetEventForBroadcast(event);
+
+		rabbithole->SignalEventSend();
+	}
+	// If the slot was cleared to continue with dealing with the connection
+	// then just reset this limbo.
+	else
+		LimboMan::Instance()->Reset(clientnum);
+}
+
+PCL void OnPlayerConnect(int clientnum, netadr_t* netaddress, char* pbguid, char* userinfo, int authstatus)
+{
 	const char* ipAddr = Plugin_NET_AdrToStringShort(netaddress);
 	
-	IPCEvent* event = new IPCEvent("JOIN");
+	IPCEvent* event = new IPCEvent("CONNECT");
 	event->AddArgument((void*) clientnum, IPCTypes::uint);
 	event->AddArgument((void*) ipAddr, IPCTypes::ch);
 	event->AddArgument((void*) Plugin_GetPlayerGUID(clientnum), IPCTypes::ch);

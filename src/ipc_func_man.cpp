@@ -2,6 +2,7 @@
 #include "ipc_function.h"
 #include "ipc_return.h"
 #include "logger.h"
+#include "limbo_man.h"
 
 #include <pinc.h>
 
@@ -24,6 +25,9 @@ IPCFuncMan::IPCFuncMan()
 	this->RegisterFunction(IPCFuncMan::Announce,         "ANNOUNCE");
 	this->RegisterFunction(IPCFuncMan::BcastAnnounce,    "BCASTANNOUNCE");
 	this->RegisterFunction(IPCFuncMan::KickPlayer,       "KICK");
+	
+	this->RegisterFunction(IPCFuncMan::LimboDeny,   "LIMBODENY");
+	this->RegisterFunction(IPCFuncMan::LimboAccept, "LIMBOACCEPT");
 }
 
 IPCFuncMan::IPCFuncMan(const IPCFuncMan& orig) {}
@@ -164,7 +168,7 @@ IPCReturn* IPCFuncMan::BcastAnnounce(std::vector<void*>* argv, std::vector<uint8
 }
 
 IPCReturn* IPCFuncMan::KickPlayer(std::vector<void*>* argv, std::vector<uint8_t>* argt)
-{	
+{
 	// Assert 1 argument total
 	if(argv->size() != 2)
 		return NULL;
@@ -172,6 +176,32 @@ IPCReturn* IPCFuncMan::KickPlayer(std::vector<void*>* argv, std::vector<uint8_t>
 	int playerID = *(int*) argv->at(0);
 
 	Plugin_DropClient(playerID, (char*) argv->at(1));
+	
+	return new IPCReturn();
+}
+
+IPCReturn* IPCFuncMan::LimboDeny(std::vector<void*>* argv, std::vector<uint8_t>* argt)
+{
+	// Assert 2 argument total
+	if(argv->size() != 2)
+		return NULL;
+	
+	int playerID = *(int*) argv->at(0);
+
+	LimboMan::Instance()->Deny(playerID, (char*) argv->at(1));
+	
+	return new IPCReturn();
+}
+
+IPCReturn* IPCFuncMan::LimboAccept(std::vector<void*>* argv, std::vector<uint8_t>* argt)
+{	
+	// Assert 1 argument total
+	if(argv->size() != 1)
+		return NULL;
+	
+	int playerID = *(int*) argv->at(0);
+
+	LimboMan::Instance()->Accept(playerID);
 	
 	return new IPCReturn();
 }
